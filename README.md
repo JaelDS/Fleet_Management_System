@@ -164,7 +164,7 @@ Contributions to the Fleet Management System are welcome! Please feel free to su
 This project is licensed under Torrens University Australia - see [Torrens University Australia](https://www.torrens.edu.au/) for more information.
 
 <p align="center">
-  <img src="github.com/JaelDS/HUB/img/love_torrens.jpg" height="60" alt="Torrens University"/>
+  <img src="img_python/love_torrens.jpg" height="60" alt="Torrens University"/>
 </p>
 
 ## Acknowledgments
