@@ -163,7 +163,11 @@ Contributions to the Fleet Management System are welcome! Please feel free to su
 
 This project is licensed under Torrens University Australia - see [Torrens University Australia](https://www.torrens.edu.au/) for more information.
 
+<p align="center">
+  <img src="github.com/JaelDS/HUB/img/love_torrens.jpg" height="60" alt="Torrens University"/>
+</p>
+
 ## Acknowledgments
 
-- Developed as part of a logistics management solution for modern businesses
-- Inspired by real-world fleet management challenges
+- Developed by Torrens students [José Antonio Escalante López. Michael Gomez Paucar and Abrar Quadri Shaik]
+- All information is simulated and "randomly" created.
