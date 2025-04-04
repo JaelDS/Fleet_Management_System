@@ -1,3 +1,9 @@
+# We will use the re library to create more complex and strict rules
+# to the users inputs.
+import re
+# We will use datetime to set real date and times in the program, as is required.
+import datetime
+
 # Define menu options as tuples because data is immutable
 main_menu = ("fleet management", "shipment management", "delivery management", "quit application")
 fleet_menu = ("add vehicle", "update vehicle information", "remove a vehicle", "view fleet", "quit fleet management")
@@ -69,8 +75,9 @@ def main():
         # Display main menu
         print("Welcome!!!\n"
               "FMS is a software that helps you to manage "
-              "your shipments and deliveries.\n"
-              "===== FMS =====")
+              "your shipments and deliveries.\n")
+        print(" FMS ".center(70, "="))
+        print("")
         # The first variable stores the index and add 1 to create a list feeling
         # The second variable iterates the tuple
         for i, m in enumerate(main_menu):
@@ -102,7 +109,9 @@ def fleet_management_menu():
     """
     while True:
         # Display Fleet Management submenu
-        print("\n===== Fleet Management =====")
+        print("")
+        print(" Fleet Management ".center(40, "="))
+        print("")
         # The first variable stores the index and add 1 to create a list feeling
         # The second variable iterates the tuple
         for i, m in enumerate(fleet_menu):
@@ -136,7 +145,9 @@ def shipment_management_menu():
     """
     while True:
         # Display Shipment Management submenu
-        print("\n===== Shipment Management =====")
+        print("")
+        print(" Shipment Management ".center(40, "="))
+        print("")
         # The first variable stores the index and add 1 to create a list feeling
         # The second variable iterates the tuple
         for i, m in enumerate(shipment_menu):
@@ -170,7 +181,9 @@ def delivery_management_menu():
     """
     while True:
         # Display Delivery Management submenu
-        print("\n===== Delivery Management =====")
+        print("")
+        print(" Delivery Management ".center(40, "="))
+        print("")
         for i, m in enumerate(delivery_menu):
             print(f"{i + 1}.- {m.title()}")
 
@@ -189,84 +202,81 @@ def delivery_management_menu():
         else:
             print("Invalid option. Please try again.")
 
-
 # Functions nested and used in the create_shipment() function
-
 # Function that returns and validates the origin address
 def addressOriginValidation():
     while True:
-        locationOrigin = input("Please enter the origin address: ").lower()
+        locationOrigin = input("Please enter the origin address.\n"
+                               "Please use: street and number, suburb, zipcode: ").lower()
 
-        if locationOrigin.count(",") == 2:
-            validationStrip = locationOrigin.replace(" ", "")
-            validation = validationStrip.split(",")
-            alphaNum = "".join(validation)
+        # The pattern restrict the input of the street and number and the suburb at least should
+        # be 3 characters long and the zipcode is limited to 4 to 10 characters
+        # as is a conventional standard worldwide. Also validates spaces characters in the input.
 
-            if len(validation) == 3 and alphaNum.isalnum():
-                # Valid input, break out of the loop
-                print("Thanks for entered a valid address\n"
-                      f"You entered the address origin: {locationOrigin.title()}")
-                return locationOrigin.title()  # Return the valid input
-            else:
-                return
+        pattern = (r'^([a-zA-Z0-9][a-zA-Z0-9\s\-]{2,}),'
+                   r'\s*([a-zA-Z][a-zA-Z\s-]{2,}),\s*([a-zA-Z0-9]{4,10})$')
+
+        match = re.match(pattern, locationOrigin)
+        if match:
+            street, suburb, zipcode = match.groups()
+            print("Thank you for providing a valid format address!")
+            print(f"Street and number: {street}")
+            print(f"Suburb: {suburb}")
+            print(f"Zipcode: {zipcode}")
+            return locationOrigin.title()
         else:
+            print("Invalid address format. Please use: street and number, suburb, zipcode")
+            # If an invalid address is typed will return to the Shipment Management menu
             return
-
 
 # Function that returns and validate the destination address
 def addressDestinationValidation():
     while True:
         locationDestination = input("Please enter the destination address: ").lower()
 
-        # Validate a correct format of the input
+        # The pattern restrict the input of the street and number and the suburb at least should
+        # be 3 characters long and the zipcode is limited to 4 to 10 characters
+        # as is a conventional standard worldwide. Also validates spaces characters in the input.
 
-        if locationDestination.count(",") == 2:
-            validationStrip = locationDestination.replace(" ", "")
-            validation = validationStrip.split(",")
-            alphaNum = "".join(validation)
+        pattern = (r'^([a-zA-Z0-9][a-zA-Z0-9\s\-]{2,}),'
+                   r'\s*([a-zA-Z][a-zA-Z\s-]{2,}),\s*([a-zA-Z0-9]{4,10})$')
 
-            # If a valid input will return the value to append it to several lists that structure
-            # the shipment order
-
-            if len(validation) == 3 and alphaNum.isalnum():
-                # Valid input, break out of the loop
-                print("Thanks for entered a valid address\n"
-                      f"You entered the address destination: {locationDestination.title()}")
-                return locationDestination.title()  # Return the valid input
-
-            # This section with the return method without argument
-            # gives control to the main function controlling this function
-            # in this case the Shipment Management function
-
-            else:
-                return
+        match = re.match(pattern, locationDestination)
+        if match:
+            street, suburb, zipcode = match.groups()
+            print("Thank you for providing a valid format address!")
+            print(f"Street and number: {street}")
+            print(f"Suburb: {suburb}")
+            print(f"Zipcode: {zipcode}")
+            return locationDestination.title()
         else:
+            print("Invalid address format. Please use: street and number, suburb, zipcode")
+            # If an invalid address is typed will return to the Shipment Management menu
             return
 
 
 # Function that returns and validates the weight of the package
 def weightValidation():
     while True:
+        # Removes all the spaces at the beginning and at the end of the input
         weight = input("Please enter the weight of the package in kg: ").strip()
 
-        # Check if input is empty
-        if not weight:
-            print("Empty input not allowed. Please enter a weight.")
-            return
+        # This pattern validates that at least one character is typed
+        # and that there are digits inputs and . if it's a float.
+        pattern = r'^\S*\d+(\.\d+)?$'
+
+        match = re.match(pattern, weight)
 
         # Check if it's a valid number in case of weights with decimals
-        if weight.count(".") == 1:
-            # It might be a float
-            weightSplit = weight.split(".")
-            if weightSplit[0].isdigit() and weightSplit[1].isdigit():
-                print("Thank you for typing a valid number.\n"
-                      f"The weight typed is: {weight} kg.")
-                return weight
-        elif weight.isdigit():
+        if "." in weight and match:
+            print("Thank you for typing a valid number.\n"
+                 f"The weight typed is: {weight} kg.")
+            return str(float(weight))
+        elif match:
             # It's an integer
             print("Thank you for typing a valid number.\n"
                   f"The weight typed is: {weight} kg.")
-            return weight
+            return str(int(weight))
 
         # If we get here, the input was invalid
         print("This is not a valid input. Try again.\n"
@@ -327,6 +337,7 @@ def create_shipment():
     If all validations pass, create a shipment ID and store all information.
     Returns True if shipment was created successfully to signal return to main menu.
     """
+
     # Start the shipment creation process
     print("\n===== Create New Shipment =====")
 
@@ -358,26 +369,13 @@ def create_shipment():
         input("Press Enter to continue...")
         return False  # Return to shipment menu if validation fails
 
-    # All validations passed, create shipment ID using the requested method
-    # We'll create a unique ID similar to the suggested approach but without eval()
-    # The id() function returns a unique identifier for an object
-    # The hash of a string is also unique for that string
-
     # Create a unique string by concatenating the inputs
-    # Origin and destination location and the weight of the package
-    # and, we use the modulus operator to get a 14-digit number no matter the input
-
     unique_string = f"{locationOrigin}+{locationDestination}+{weight}%23"
 
     # Get a simple unique number (Python's built-in hash function)
-    # Once we got a unique concatenation we use the hash built-in function
-    # to get a unique integer from the unique string.
-    # Finally, we use the abs built-in function to avoid using negative numbers.
-
     id_number = abs(hash(unique_string))
 
     # Format the shipment ID to always be 15 characters long
-    # Convert the number to string
     id_number_str = str(id_number)
 
     # Calculate how many zeros to add (we need 14 chars after 'A')
@@ -400,32 +398,12 @@ def create_shipment():
     # Initialize the delivery status as pending for new shipments
     delivery_status.append("pending")
 
-    # Create a fixed datetime for the new shipment
-    # This simulates a system-generated datetime without using libraries
-
-    # Generate fixed date/time components using simple algorithm instead of random
-    # Using system-derived values based on shipment ID for deterministic but varied results
-
-    # Calculate numeric value based on shipment ID
-    id_sum = sum(ord(char) for char in shipmentID)
-
-    # Generate fixed year
-    year = "2025"
-
-    # Generate month (1-12) based on shipment ID
-    month = str(1 + (id_sum % 12)).zfill(2)
-
-    # Generate day (1-28) based on shipment ID
-    day = str(1 + ((id_sum * 3) % 28)).zfill(2)
-
-    # Generate time components based on shipment ID
-    hour = str((id_sum * 7) % 24).zfill(2)
-    minute = str((id_sum * 11) % 60).zfill(2)
-    second = str((id_sum * 13) % 60).zfill(2)
+    # Get the current date and time using the datetime library
+    current_datetime = datetime.datetime.now()
 
     # Format the datetime string in YYYY-MM-DD HH:MM:SS format
-    fixed_datetime = f"{year}-{month}-{day} {hour}:{minute}:{second}"
-    delivery_datetime.append(fixed_datetime)
+    formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    delivery_datetime.append(formatted_datetime)
 
     # Display confirmation to the user before returning to the main menu
     print("\n===== Shipment Created Successfully =====")
@@ -445,13 +423,12 @@ def create_shipment():
         status = "Out for Delivery"
 
     print(f"Status: {status}")
-    print(f"Date/Time: {fixed_datetime}")
+    print(f"Creation Date/Time: {formatted_datetime}")
 
     input("\nPress Enter to return to the main menu...")
 
     # After a successful shipment creation, return True to signal return to main menu
     return True
-
 
 # Function that allows the user to verify a shipment information if shipment exists
 # in shipment_list.
@@ -544,7 +521,7 @@ def view_shipments():
                 status = "Out for Delivery"
 
             print(f"Status: {status}")
-            print(f"Date/Time: {delivery_datetime[i]}")
+            print(f"Creation Date/Time: {delivery_datetime[i]}")
 
         print("-" * 40)
 
@@ -557,390 +534,163 @@ def view_shipments():
 # Replace the fleet management functions in the first code with these functions
 
 def add_vehicle():
-    """
-    Add a new vehicle to the fleet.
-
-    This function:
-    - Gets vehicle details from user
-    - Validates input format for vehicle ID (VXXXXXX)
-    - Ensures vehicle ID is unique
-    - Adds valid vehicle to the list
-    """
-    print("\n===== Add Vehicle to Fleet =====")
-
-    # Get vehicle ID and validate format
-    veh_code = input("Enter Vehicle ID (format: VXXXXXX): ").upper()
-
-    # Check if vehicle ID follows the correct format (starts with V and has 6 characters after)
-    if not veh_code.startswith("V") or len(veh_code) != 7:
-        print("Error: Vehicle ID must start with 'V' followed by 6 characters.")
-        input("Press Enter to continue...")
+    """Register a new vehicle ensuring it has a unique identifier."""
+    veh_code = input("Enter Vehicle Code (e.g., V123): ")
+    # Checking if vehicle code format is correct
+    if not re.match(r"^V\d+$", veh_code):
+        # Check if the code of the vehicle does not match the pattern "V" followed by digits (V123)
+        print("Error: Vehicle Code must start with 'V' followed by digits.")
+        # Prints an error message if the code of the vehicle is not in correct format
         return
-
-    # Check if remaining characters are alphanumeric
-    if not veh_code[1:].isalnum():
-        print("Error: Vehicle ID must only contain letters and numbers after 'V'.")
-        input("Press Enter to continue...")
-        return
-
-    # Check if vehicle ID already exists
+        # Ensuring uniqueness of vehicle code
     if veh_code in vehicles_list:
-        print("Error: This Vehicle ID already exists in the system.")
-        input("Press Enter to continue...")
+        print("Error: Vehicle Code already exists.")
         return
-
-    # Get additional vehicle details
-    veh_type = input("Enter Vehicle Type (e.g., Truck, Van, Car): ").strip()
-    if not veh_type:
-        print("Error: Vehicle type cannot be empty.")
-        input("Press Enter to continue...")
+    veh_type = input("Enter Vehicle Type: ")  # Get vehicle type
+    veh_model = input("Enter Vehicle Model: ")  # Get model name
+    cap_veh = input("Enter Load Capacity (kg): ")  # Get vehicle load capacity
+    # Validate load capacity input
+    if not cap_veh.isdigit() or int(cap_veh) <= 0:
+        print("Error: Load capacity should be a positive number.")
         return
-
-    veh_capacity = input("Enter Load Capacity (kg): ").strip()
-    # Validate capacity is a positive number
-    if not veh_capacity.isdigit() or int(veh_capacity) <= 0:
-        print("Error: Capacity must be a positive number.")
-        input("Press Enter to continue...")
-        return
-
-    # All validations passed, add vehicle to the list
+        # Add vehicle details to the lists
     vehicles_list.append(veh_code)
-
-    # In a real application, you might store additional details in another structure
-    # For now, we'll just use the vehicles_list
-
-    print(f"\nVehicle {veh_code} successfully added to the fleet!")
-    input("Press Enter to continue...")
+    vehicle_types.append(veh_type)
+    vehicle_capacities.append(cap_veh)
+    vehicle_availability.append(True)
+    print("Vehicle successfully registered.")
 
 
 def update_vehicle():
-    """
-    Update vehicle information.
-
-    This function:
-    - Gets vehicle ID from user
-    - Verifies vehicle exists in system
-    - Updates vehicle ID, type, and capacity
-    - Confirms update to user
-    """
-    print("\n===== Update Vehicle Information =====")
-
-    if not vehicles_list:
-        print("No vehicles in the fleet. Please add vehicles first.")
-        input("Press Enter to continue...")
-        return
-
-    # Display all vehicles first
-    print("Current Vehicles:")
-    for i, vehicle in enumerate(vehicles_list):
-        # If we have parallel lists for details, show them
-        if i < len(vehicle_types) and i < len(vehicle_capacities):
-            print(f"{i + 1}. {vehicle} (Type: {vehicle_types[i]}, Capacity: {vehicle_capacities[i]} kg)")
-        else:
-            print(f"{i + 1}. {vehicle}")
-
-    # Get vehicle to update
-    veh_code = input("\nEnter Vehicle ID to update: ").upper()
-
-    # Check if vehicle exists
-    if veh_code not in vehicles_list:
-        print("Error: Vehicle ID not found in the system.")
-        input("Press Enter to continue...")
-        return
-
-    # Get the index of the vehicle
-    index = vehicles_list.index(veh_code)
-
-    # Get updated information
-    print(f"\nUpdating Vehicle {veh_code}")
-
-    # 1. Optionally update the ID
-    new_id = input("Enter new Vehicle ID (or press Enter to keep current): ").upper()
-
-    # If new ID provided, validate it
-    if new_id:
-        # Check format
-        if not new_id.startswith("V") or len(new_id) != 7:
-            print("Error: Vehicle ID must start with 'V' followed by 6 characters.")
-            input("Press Enter to continue...")
+    """Update vehicle specifications."""
+    veh_code = input("Kindly Provide Vehicle Code for update: ")  # Identify vehicle to modify
+    if veh_code in vehicles_list:
+        index = vehicles_list.index(veh_code)
+        new_type = input("Kindly Provide updated Vehicle Type: ")
+        new_model = input("Kindly Provide updated Model: ")  # Enter updated model
+        new_cap = input("Kindly Provide updated Load capacity (kg): ")  # Enter new load capacity
+        # Checking new capacity validity
+        if not new_cap.isdigit() or int(new_cap) <= 0:
+            print("Error: Capacity must be a valid positive number.")
             return
-
-        # Check alphanumeric
-        if not new_id[1:].isalnum():
-            print("Error: Vehicle ID must only contain letters and numbers after 'V'.")
-            input("Press Enter to continue...")
-            return
-
-        # Check not already in use (except by current vehicle)
-        if new_id in vehicles_list and new_id != veh_code:
-            print("Error: This Vehicle ID is already in use.")
-            input("Press Enter to continue...")
-            return
-
-    # 2. Update vehicle type
-    current_type = vehicle_types[index] if index < len(vehicle_types) else "Unknown"
-    print(f"Current Vehicle Type: {current_type}")
-    new_type = input("Enter new Vehicle Type (or press Enter to keep current): ").strip()
-
-    # 3. Update vehicle capacity
-    current_capacity = vehicle_capacities[index] if index < len(vehicle_capacities) else "Unknown"
-    print(f"Current Load Capacity: {current_capacity} kg")
-    new_capacity = input("Enter new Load Capacity in kg (or press Enter to keep current): ").strip()
-
-    # Validate capacity if provided
-    if new_capacity:
-        if not new_capacity.isdigit() or int(new_capacity) <= 0:
-            print("Error: Capacity must be a positive number.")
-            input("Press Enter to continue...")
-            return
-
-    # Apply all updates
-
-    # Update ID if provided
-    if new_id:
-        vehicles_list[index] = new_id
-        print(f"Vehicle ID updated from {veh_code} to {new_id}")
-
-    # Update type if provided
-    if new_type:
-        # Ensure the vehicle_types list is long enough
-        while len(vehicle_types) <= index:
-            vehicle_types.append("Unknown")
+            # Apply modifications
         vehicle_types[index] = new_type
-        print(f"Vehicle Type updated to: {new_type}")
-
-    # Update capacity if provided
-    if new_capacity:
-        # Ensure the vehicle_capacities list is long enough
-        while len(vehicle_capacities) <= index:
-            vehicle_capacities.append("0")
-        vehicle_capacities[index] = new_capacity
-        print(f"Vehicle Capacity updated to: {new_capacity} kg")
-
-    print("\nVehicle information updated successfully!")
-    input("Press Enter to continue...")
+        # Note: Since there's no explicit vehicle_models list in your example,
+        # we'll skip storing the model update
+        vehicle_capacities[index] = new_cap
+        print("Vehicle details updated successfully.")
+        return
+    print("Error: No matching vehicle found.")
 
 
 def remove_vehicle():
-    """
-    Remove a vehicle from the fleet.
+    """Remove a vehicle record."""
+    veh_code = input("Enter Vehicle Code to delete: ")  # Identify vehicle to delete
+    if veh_code in vehicles_list:
+        index = vehicles_list.index(veh_code)
+        confirmation = input("Confirm deletion? (yes/no): ").strip().lower()
+        if confirmation == "yes":
+            # Check if vehicle is assigned to any shipments
+            if veh_code in vehicles_selected:
+                print("Error: Cannot remove vehicle as it is assigned to shipments.")
+                return
 
-    This function:
-    - Gets vehicle ID from user
-    - Verifies vehicle exists
-    - Removes vehicle from system
-    """
-    print("\n===== Remove Vehicle from Fleet =====")
-
-    if not vehicles_list:
-        print("No vehicles in the fleet to remove.")
-        input("Press Enter to continue...")
+            # Remove from all vehicle lists
+            vehicles_list.pop(index)
+            vehicle_types.pop(index)
+            vehicle_capacities.pop(index)
+            vehicle_availability.pop(index)
+            print("Vehicle record successfully removed.")
+        else:
+            print("Deletion canceled.")
         return
-
-    # Display all vehicles
-    print("Current Vehicles:")
-    for i, vehicle in enumerate(vehicles_list):
-        print(f"{i + 1}. {vehicle}")
-
-    # Get vehicle to remove
-    veh_code = input("\nEnter Vehicle ID to remove: ").upper()
-
-    # Check if vehicle exists
-    if veh_code not in vehicles_list:
-        print("Error: Vehicle ID not found in the system.")
-        input("Press Enter to continue...")
-        return
-
-    # Check if vehicle is assigned to any shipments
-    if veh_code in vehicles_selected:
-        print("Error: Cannot remove vehicle as it is assigned to one or more shipments.")
-        input("Press Enter to continue...")
-        return
-
-    # Confirm deletion
-    confirm = input(f"Are you sure you want to remove vehicle {veh_code}? (y/n): ").lower()
-    if confirm != 'y':
-        print("Vehicle removal cancelled.")
-        input("Press Enter to continue...")
-        return
-
-    # Remove vehicle
-    vehicles_list.remove(veh_code)
-    print(f"Vehicle {veh_code} has been removed from the fleet.")
-    input("Press Enter to continue...")
+    print("Error: No such vehicle found.")
 
 
 def view_fleet():
-    """
-    Display all vehicles in the fleet with complete information.
-    """
-    print("\n===== Fleet Vehicles =====")
-
+    """Display all registered vehicles."""
     if not vehicles_list:
-        print("No vehicles in the fleet.")
-        input("Press Enter to continue...")
-        return
-
-    print(f"Total Vehicles: {len(vehicles_list)}")
-    print("-" * 50)
-
-    # Print header
-    print(f"{'No.':<4} {'Vehicle ID':<10} {'Type':<15} {'Capacity (kg)':<15} {'Assigned':<10}")
-    print("-" * 50)
-
-    for i, vehicle in enumerate(vehicles_list):
-        # Get vehicle type (if available)
-        veh_type = vehicle_types[i] if i < len(vehicle_types) else "Unknown"
-
-        # Get vehicle capacity (if available)
-        veh_capacity = vehicle_capacities[i] if i < len(vehicle_capacities) else "Unknown"
-
-        # Check if vehicle is assigned to any shipments
-        assigned = "Yes" if vehicle in vehicles_selected else "No"
-
-        # Print complete vehicle information
-        print(f"{i + 1:<4} {vehicle:<10} {veh_type:<15} {veh_capacity:<15} {assigned:<10}")
-
-    print("-" * 50)
-    input("Press Enter to continue...")
+        print("No vehicles have been added yet.")
+    else:
+        print("\nFleet Inventory:")
+        print(f"{'Code':<10} {'Type':<15} {'Capacity (kg)':<15}")
+        print("=" * 50)
+        for i in range(len(vehicles_list)):
+            print(f"{vehicles_list[i]:<10} {vehicle_types[i]:<15} {vehicle_capacities[i]:<15}")
 
 # === Delivery Management Functions ===
 
 def record_delivery():
     """
-    Record a delivery for a shipment.
-
-    This function allows marking a shipment as delivered by:
-    - Getting a shipment ID from user
-    - Validating the shipment ID exists
-    - Marking the shipment as delivered with current date/time
-    - Confirming the delivery has been recorded
+    Record a delivery for an existing shipment.
+    Changes the status from pending to delivered and records the delivery datetime.
     """
-    print("\n===== Record Delivery for a Shipment =====")
+    print("\n===== Record Shipment Delivery =====")
 
-    if not shipment_ids_list:
-        print("No shipments found in the system to mark as delivered.")
-        input("Press Enter to continue...")
-        return
+    # Get shipment ID from user
+    shipment_id = input("Enter Shipment ID to mark as delivered: ").strip().upper()
 
-    shipment_id = input("Enter your shipment ID to mark as delivered.\n"
-                        "Remember the format: Axxxxxxxxxxxxxx: ").upper()
-
-    # Validate shipment ID format and existence
-    if len(shipment_id) != 15 or not shipment_id.startswith("A"):
-        print("Error: Invalid shipment ID format. Please try again!")
-        input("Press Enter to continue...")
-        return
-
-    # Check if shipment exists
+    # Check if shipment ID exists
     if shipment_id not in shipment_ids_list:
-        print("\nError: Shipment ID not found. Please try again!")
+        print("Error: Shipment ID not found. Please try again!")
         input("Press Enter to continue...")
-        return
+        return False
 
-    # Get the index of the shipment
-    index = shipment_ids_list.index(shipment_id)
+    # Get index of the shipment
+    shipment_index = shipment_ids_list.index(shipment_id)
 
-    # Check if already delivered
-    if delivery_status[index] == "delivered":
-        print(f"\nThis shipment has already been marked as delivered on {delivery_datetime[index]}.")
+    # Check if the shipment is already delivered
+    if delivery_status[shipment_index] == "delivered":
+        print(f"Shipment {shipment_id} has already been marked as delivered.")
         input("Press Enter to continue...")
-        return
+        return False
 
-    # Mark as delivered and create a simulated date/time string
-    delivery_status[index] = "delivered"
+    # Update the delivery status
+    delivery_status[shipment_index] = "delivered"
 
-    # Create a simple simulated date/time string without external libraries
-    # Instead of using random, use a deterministic approach based on shipment ID
+    # Record the current datetime for the delivery
+    current_datetime = datetime.datetime.now()
+    formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    delivery_datetime[shipment_index] = formatted_datetime
 
-    # Generate a unique value based on shipment ID
-    id_value = sum(ord(char) for char in shipment_id)
-
-    # Generate year
-    year = "2025"
-
-    # Generate month (1-12) based on shipment ID
-    month = str(1 + (id_value % 12)).zfill(2)
-
-    # Generate day (1-28) based on shipment ID
-    day = str(1 + ((id_value * 5) % 28)).zfill(2)
-
-    # Generate time components based on shipment ID
-    hour = str((id_value * 9) % 24).zfill(2)
-    minute = str((id_value * 17) % 60).zfill(2)
-    second = str((id_value * 23) % 60).zfill(2)
-
-    # Create the date/time string in format: YYYY-MM-DD HH:MM:SS
-    simulated_datetime = f"{year}-{month}-{day} {hour}:{minute}:{second}"
-    delivery_datetime[index] = simulated_datetime
-
-    print("\nThe delivery has been successfully marked as delivered.")
-    print(f"Delivery recorded at: {simulated_datetime}")
+    print(f"\nShipment {shipment_id} has been marked as delivered at {formatted_datetime}.")
     input("Press Enter to continue...")
+    return True
 
 
 def view_delivery_status():
     """
-    View delivery status for a shipment.
-
-    This function allows checking the delivery status of a shipment by:
-    - Getting a shipment ID from user
-    - Validating the shipment ID exists
-    - Displaying the current delivery status
-    - If delivered, showing the delivery date/time
+    View the delivery status for a specific shipment.
     """
-    print("\n===== View Delivery Status for a Shipment =====")
+    print("\n===== View Shipment Delivery Status =====")
 
-    if not shipment_ids_list:
-        print("No shipments found in the system to check status.")
-        input("Press Enter to continue...")
-        return
+    # Get shipment ID from user
+    shipment_id = input("Enter Shipment ID to check delivery status: ").strip().upper()
 
-    shipment_id = input("Enter your shipment ID to check delivery status.\n"
-                        "Remember the format: Axxxxxxxxxxxxxx: ").upper()
-
-    # Validate shipment ID format and existence
-    if len(shipment_id) != 15 or not shipment_id.startswith("A"):
-        print("Error: Invalid shipment ID format. Please try again!")
-        input("Press Enter to continue...")
-        return
-
-    # Check if shipment exists
+    # Check if shipment ID exists
     if shipment_id not in shipment_ids_list:
-        print("\nError: Shipment ID not found. Please try again!")
+        print("Error: Shipment ID not found. Please try again!")
         input("Press Enter to continue...")
-        return
+        return False
 
-    # Get the index of the shipment
-    index = shipment_ids_list.index(shipment_id)
+    # Get index of the shipment
+    shipment_index = shipment_ids_list.index(shipment_id)
 
-    # Display status information
+    # Display delivery status
+    status = delivery_status[shipment_index]
+    datetime_str = delivery_datetime[shipment_index]
+
     print(f"\nShipment ID: {shipment_id}")
-    print(f"Origin: {origins_list[index]}")
-    print(f"Destination: {destinations_list[index]}")
-    print(f"Weight: {weights_list[index]} kg")
-    print(f"Vehicle: {vehicles_selected[index]}")
+    print(f"Delivery Status: {status.title()}")
 
-    if delivery_status[index] == "delivered":
-        # If the shipment has been marked as delivered
-        print(f"Status: Delivered")
-        print(f"Delivery Date/Time: {delivery_datetime[index]}")
-    else:
-        # Generate a tracking status based on the shipment ID
-        status_code = sum(ord(char) for char in shipment_id) % 3
-
-        if status_code == 0:
-            status = "Processing"
-        elif status_code == 1:
-            status = "In Transit"
-        else:  # status_code == 2
-            status = "Out for Delivery"
-
-        print(f"Status: {status}")
-        print(f"Date/Time: {delivery_datetime[index]}")
-        print("To mark this shipment as delivered, please select 'Record delivery for a shipment' option.")
+    if status == "delivered":
+        print(f"Delivery Time: {datetime_str}")
+    elif status == "pending":
+        print("This shipment has not been delivered yet.")
+        print("Select 'Record Delivery for a Shipment' from the menu to mark it as delivered.")
 
     input("Press Enter to continue...")
+    return True
 
 # Start the program by directly calling the main function
 main()
