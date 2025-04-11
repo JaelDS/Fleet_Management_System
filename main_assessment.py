@@ -102,41 +102,95 @@ def main():
 
 
 # First section of the program
-
-def fleet_management_menu():
-    """
-    Display and handle the Fleet Management submenu.
-    """
+  # Fleet Management System
+# Global list to store fleet vehicle records
+fleet_records = []
+def manage_fleet():
+    """Fleet management menu to handle different vehicle-related tasks."""
     while True:
-        # Display Fleet Management submenu
-        print("")
-        print(" Fleet Management ".center(40, "="))
-        print("")
-        # The first variable stores the index and add 1 to create a list feeling
-        # The second variable iterates the tuple
-        for i, m in enumerate(fleet_menu):
-            print(f"{i + 1}.- {m.title()}")
-
-        # Get user input
-        choice = input("\nPlease select an option (1-5 or type the submenu name): ").strip()
-
-        # Validate and process user input
-        if choice == "1" or choice.lower() == "add vehicle":
+        print("\n--- Fleet Management Menu ---")
+        print("1. Add a Vehicle")
+        print("2. Update Vehicle Information")
+        print("3. Remove a Vehicle")
+        print("4. View All Vehicles")
+        print("5. Quit Fleet Management")
+         selection = input("Select an operation (1-5): ").strip()
+        if selection == "1":
             add_vehicle()
-        elif choice == "2" or choice.lower() == "update vehicle information":
+        elif selection == "2":
             update_vehicle()
-        elif choice == "3" or choice.lower() == "remove a vehicle":
+        elif selection == "3":
             remove_vehicle()
-        elif choice == "4" or choice.lower() == "view fleet":
+        elif selection == "4":
             view_fleet()
-        elif choice == "5" or choice.lower() == "quit fleet management" or choice.lower() == "q" \
-                or choice.lower() == "Q":
-            print("Returning to main menu...")
-            return
+        elif selection == "5":
+            print("Exiting Fleet Management...")
+            break
         else:
-            print("Invalid option. Please try again.")
-
-
+            print("Invalid selection. Please enter a number between 1 and 5.")
+# === Fleet Management Functions ===
+def add_vehicle():
+    """Add a new vehicle ensuring it has a unique identifier with more than 10,000 digits after 'V'."""
+    veh_code = input("Enter Vehicle ID (must start with 'V' and have more than 10,000 digits): ").strip()
+if not (veh_code.startswith("V") and veh_code[1:].isdigit() and len(veh_code[1:]) > 10000):
+        print("Error: Vehicle ID must start with 'V' followed by more than 10,000 digits.")
+        return
+if any(veh["code"] == veh_code for veh in fleet_records):
+        print("Error: Vehicle ID already exists.")
+        return
+     veh_type = input("Enter Vehicle Type: ").strip()
+    veh_model = input("Enter Vehicle Model: ").strip()
+    cap_veh = input("Enter Load Capacity (kg): ").strip()
+    if not cap_veh.isdigit() or int(cap_veh) <= 0:
+        print("Error: Load Capacity must be a positive number.")
+        return
+    fleet_records.append({
+        "code": veh_code,
+        "type": veh_type,
+        "model": veh_model,
+        "cap": int(cap_veh)
+    })
+   print("Vehicle successfully added.")
+def update_vehicle():
+    """Update an existing vehicle's information."""
+    veh_code = input("Enter Vehicle ID to update: ").strip()
+   for veh in fleet_records:
+        if veh["code"] == veh_code:
+            new_type = input("Enter new Vehicle Type: ").strip()
+            new_model = input("Enter new Vehicle Model: ").strip()
+            new_cap = input("Enter new Load Capacity (kg): ").strip()
+     if not new_cap.isdigit() or int(new_cap) <= 0:
+                print("Error: Load Capacity must be a valid positive number.")
+                return
+         veh["type"] = new_type
+            veh["model"] = new_model
+            veh["cap"] = int(new_cap)
+    print("Vehicle details updated successfully.")
+            return
+     print("Error: No matching vehicle found.")
+def remove_vehicle():
+    """Remove a vehicle from the fleet."""
+    veh_code = input("Enter Vehicle ID to remove: ").strip()
+  for i, veh in enumerate(fleet_records):
+        if veh["code"] == veh_code:
+            confirm = input("Are you sure you want to delete this vehicle? (yes/no): ").strip().lower()
+            if confirm == "yes":
+                del fleet_records[i]
+                print("Vehicle removed successfully.")
+            else:
+                print("Vehicle removal canceled.")
+            return
+print("Error: No matching vehicle found.")
+def view_fleet():
+    """Display a list of all vehicles in the fleet."""
+    if not fleet_records:
+        print("No vehicles in the fleet.")
+        return
+  print("\n--- Fleet Inventory ---")
+    print(f"{'ID':<25} {'Type':<15} {'Model':<15} {'Capacity (kg)':<15}")
+    print("-" * 75)
+    for veh in fleet_records:
+        print(f"{veh['code'][:22] + '...':<25} {veh['type']:<15} {veh['model']:<15} {veh['cap']:<15}")
 # Second section of the program
 
 def shipment_management_menu():
@@ -527,96 +581,6 @@ def view_shipments():
 
     input("\nPress Enter to continue...")
     return
-
-
-# === Fleet Management Functions ===
-
-# Replace the fleet management functions in the first code with these functions
-
-def add_vehicle():
-    """Register a new vehicle ensuring it has a unique identifier."""
-    veh_code = input("Enter Vehicle Code (e.g., V123): ")
-    # Checking if vehicle code format is correct
-    if not re.match(r"^V\d+$", veh_code):
-        # Check if the code of the vehicle does not match the pattern "V" followed by digits (V123)
-        print("Error: Vehicle Code must start with 'V' followed by digits.")
-        # Prints an error message if the code of the vehicle is not in correct format
-        return
-        # Ensuring uniqueness of vehicle code
-    if veh_code in vehicles_list:
-        print("Error: Vehicle Code already exists.")
-        return
-    veh_type = input("Enter Vehicle Type: ")  # Get vehicle type
-    veh_model = input("Enter Vehicle Model: ")  # Get model name
-    cap_veh = input("Enter Load Capacity (kg): ")  # Get vehicle load capacity
-    # Validate load capacity input
-    if not cap_veh.isdigit() or int(cap_veh) <= 0:
-        print("Error: Load capacity should be a positive number.")
-        return
-        # Add vehicle details to the lists
-    vehicles_list.append(veh_code)
-    vehicle_types.append(veh_type)
-    vehicle_capacities.append(cap_veh)
-    vehicle_availability.append(True)
-    print("Vehicle successfully registered.")
-
-
-def update_vehicle():
-    """Update vehicle specifications."""
-    veh_code = input("Kindly Provide Vehicle Code for update: ")  # Identify vehicle to modify
-    if veh_code in vehicles_list:
-        index = vehicles_list.index(veh_code)
-        new_type = input("Kindly Provide updated Vehicle Type: ")
-        new_model = input("Kindly Provide updated Model: ")  # Enter updated model
-        new_cap = input("Kindly Provide updated Load capacity (kg): ")  # Enter new load capacity
-        # Checking new capacity validity
-        if not new_cap.isdigit() or int(new_cap) <= 0:
-            print("Error: Capacity must be a valid positive number.")
-            return
-            # Apply modifications
-        vehicle_types[index] = new_type
-        # Note: Since there's no explicit vehicle_models list in your example,
-        # we'll skip storing the model update
-        vehicle_capacities[index] = new_cap
-        print("Vehicle details updated successfully.")
-        return
-    print("Error: No matching vehicle found.")
-
-
-def remove_vehicle():
-    """Remove a vehicle record."""
-    veh_code = input("Enter Vehicle Code to delete: ")  # Identify vehicle to delete
-    if veh_code in vehicles_list:
-        index = vehicles_list.index(veh_code)
-        confirmation = input("Confirm deletion? (yes/no): ").strip().lower()
-        if confirmation == "yes":
-            # Check if vehicle is assigned to any shipments
-            if veh_code in vehicles_selected:
-                print("Error: Cannot remove vehicle as it is assigned to shipments.")
-                return
-
-            # Remove from all vehicle lists
-            vehicles_list.pop(index)
-            vehicle_types.pop(index)
-            vehicle_capacities.pop(index)
-            vehicle_availability.pop(index)
-            print("Vehicle record successfully removed.")
-        else:
-            print("Deletion canceled.")
-        return
-    print("Error: No such vehicle found.")
-
-
-def view_fleet():
-    """Display all registered vehicles."""
-    if not vehicles_list:
-        print("No vehicles have been added yet.")
-    else:
-        print("\nFleet Inventory:")
-        print(f"{'Code':<10} {'Type':<15} {'Capacity (kg)':<15}")
-        print("=" * 50)
-        for i in range(len(vehicles_list)):
-            print(f"{vehicles_list[i]:<10} {vehicle_types[i]:<15} {vehicle_capacities[i]:<15}")
 
 # === Delivery Management Functions ===
 
