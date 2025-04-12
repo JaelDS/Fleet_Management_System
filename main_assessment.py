@@ -4,8 +4,6 @@ import re
 # We will use datetime to set real date and times in the program, as is required.
 import datetime
 
-import random
-
 # Define menu options as tuples because data is immutable
 main_menu = ("fleet management", "shipment management", "delivery management", "quit application")
 fleet_menu = ("add vehicle", "update vehicle information", "remove a vehicle", "view fleet", "quit fleet management")
@@ -530,258 +528,60 @@ def view_shipments():
     input("\nPress Enter to continue...")
     return
 
+
+# === Fleet Management Functions ===
+
+# Replace the fleet management functions in the first code with these functions
+
 def add_vehicle():
-    """
-    Adds a new vehicle by prompting for user input and generating a unique vehicle ID.
-    The function validates inputs, checks against existing vehicles, and updates global vehicle lists.
-
-    Returns:
-        dict or None: A dictionary containing the new vehicle information if successful, None otherwise
-    """
-    global vehicles_list, vehicle_types, vehicle_capacities, vehicle_availability
-
-    # Valid vehicle types - match your existing data types
-    VALID_VEHICLE_TYPES = ['truck', 'car', 'van', 'bus', 'motorcycle']
-
-    # Type codes for different vehicle types
-    TYPE_CODES = {
-        'car': 'C',
-        'truck': 'T',
-        'bus': 'B',
-        'van': 'V',
-        'motorcycle': 'M'
-    }
-
-    # Maximum attempts for generating a unique ID
-    MAX_GENERATION_ATTEMPTS = 100
-
-    def generate_random_string(length):
-        """Generate a random alphanumeric string of specified length"""
-        # Omitting potentially confusing characters like I, O, 0, 1
-        chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-        return ''.join(random.choice(chars) for _ in range(length))
-
-    # Prompt for vehicle information
-    print("\n===== Add New Vehicle =====")
-
-    # Get vehicle type from user
-    while True:
-        vehicle_type = input(f"Enter vehicle type ({', '.join(VALID_VEHICLE_TYPES)}): ").strip().lower()
-
-        if not vehicle_type:
-            print("Vehicle type cannot be empty. Please try again.")
-            continue
-
-        if vehicle_type in VALID_VEHICLE_TYPES:
-            break
-        else:
-            print(f"Invalid vehicle type. Please use one of: {', '.join(VALID_VEHICLE_TYPES)}")
-
-    # Get capacity from user
-    while True:
-        capacity_input = input("Enter vehicle capacity (weight in kg or number of passengers): ").strip()
-
-        try:
-            capacity = int(capacity_input)
-            if capacity > 0 and capacity < 10000:  # Assuming max capacity is 10000 (for trucks)
-                break
-            else:
-                print("Capacity must be a positive number less than 10000.")
-        except ValueError:
-            print("Invalid capacity. Please enter a numeric value.")
-
-    # Determine capacity code based on capacity and vehicle type
-    if vehicle_type == 'truck':
-        if capacity <= 1000:
-            capacity_code = 'S'  # Small truck
-        elif capacity <= 5000:
-            capacity_code = 'M'  # Medium truck
-        else:
-            capacity_code = 'L'  # Large truck
-    else:  # For passenger vehicles
-        if capacity <= 2:
-            capacity_code = 'S'  # Small capacity
-        elif capacity <= 5:
-            capacity_code = 'M'  # Medium capacity
-        elif capacity <= 15:
-            capacity_code = 'L'  # Large capacity
-        else:
-            capacity_code = 'X'  # Extra large capacity
-
-    # Get the type code
-    type_code = TYPE_CODES.get(vehicle_type, 'X')
-
-    # Get current year's last two digits
-    year_code = str(datetime.datetime.now().year)[-2:]
-
-    # Generate a unique ID with multiple attempts
-    attempts = 0
-    vehicle_id = None
-
-    while True:
-        # Create the ID format: V[TypeCode][CapacityCode][YearCode][RandomPart]
-        random_part = generate_random_string(4)
-        vehicle_id = f"V{type_code}{capacity_code}{year_code}{random_part}"
-
-        attempts += 1
-        # Check if the ID already exists in the vehicles_list
-        if vehicle_id not in vehicles_list:
-            break
-
-        # Break the loop if we've reached maximum attempts to prevent infinite loops
-        if attempts >= MAX_GENERATION_ATTEMPTS:
-            print(f"Warning: Maximum attempts ({MAX_GENERATION_ATTEMPTS}) reached while generating unique vehicle ID")
-            print("Returning to fleet menu...")
-            input("Press Enter to continue...")
-            return None
-
-    # Set availability to True by default for new vehicles
-    # It will be automatically managed when vehicles are assigned to shipments
-    availability = True
-
-    # Create vehicle object with all information
-    new_vehicle = {
-        'id': vehicle_id,
-        'type': vehicle_type.capitalize(),  # Store with first letter capitalized to match existing data
-        'capacity': str(capacity),  # Convert to string to match existing data format
-        'available': availability
-    }
-
-    # Add the new vehicle to the global lists
-    vehicles_list.append(vehicle_id)
-    vehicle_types.append(new_vehicle['type'])
-    vehicle_capacities.append(new_vehicle['capacity'])
-    vehicle_availability.append(availability)
-
-    print(f"\nVehicle added successfully with ID: {vehicle_id}")
-    print(f"Type: {new_vehicle['type']}")
-    print(f"Capacity: {new_vehicle['capacity']}")
-    print(f"Status: Available")
-
-    input("\nPress Enter to return to the main menu...")
-
-    # Return to main menu
-    return True  # Return True to signal returning to main menu
+    """Register a new vehicle ensuring it has a unique identifier."""
+    veh_code = input("Enter Vehicle Code (e.g., V123): ")
+    # Checking if vehicle code format is correct
+    if not re.match(r"^V\d+$", veh_code):
+        # Check if the code of the vehicle does not match the pattern "V" followed by digits (V123)
+        print("Error: Vehicle Code must start with 'V' followed by digits.")
+        # Prints an error message if the code of the vehicle is not in correct format
+        return
+        # Ensuring uniqueness of vehicle code
+    if veh_code in vehicles_list:
+        print("Error: Vehicle Code already exists.")
+        return
+    veh_type = input("Enter Vehicle Type: ")  # Get vehicle type
+    veh_model = input("Enter Vehicle Model: ")  # Get model name
+    cap_veh = input("Enter Load Capacity (kg): ")  # Get vehicle load capacity
+    # Validate load capacity input
+    if not cap_veh.isdigit() or int(cap_veh) <= 0:
+        print("Error: Load capacity should be a positive number.")
+        return
+        # Add vehicle details to the lists
+    vehicles_list.append(veh_code)
+    vehicle_types.append(veh_type)
+    vehicle_capacities.append(cap_veh)
+    vehicle_availability.append(True)
+    print("Vehicle successfully registered.")
 
 
 def update_vehicle():
-    """
-    Update vehicle specifications.
-    Displays vehicle list for selection and allows updating type and capacity.
-    """
-    global vehicles_list, vehicle_types, vehicle_capacities
-
-    # Display all vehicles with their details first
-    print("\n===== Update Vehicle Information =====")
-
-    if not vehicles_list:
-        print("No vehicles have been added yet.")
-        input("\nPress Enter to return to the fleet menu...")
+    """Update vehicle specifications."""
+    veh_code = input("Kindly Provide Vehicle Code for update: ")  # Identify vehicle to modify
+    if veh_code in vehicles_list:
+        index = vehicles_list.index(veh_code)
+        new_type = input("Kindly Provide updated Vehicle Type: ")
+        new_model = input("Kindly Provide updated Model: ")  # Enter updated model
+        new_cap = input("Kindly Provide updated Load capacity (kg): ")  # Enter new load capacity
+        # Checking new capacity validity
+        if not new_cap.isdigit() or int(new_cap) <= 0:
+            print("Error: Capacity must be a valid positive number.")
+            return
+            # Apply modifications
+        vehicle_types[index] = new_type
+        # Note: Since there's no explicit vehicle_models list in your example,
+        # we'll skip storing the model update
+        vehicle_capacities[index] = new_cap
+        print("Vehicle details updated successfully.")
         return
+    print("Error: No matching vehicle found.")
 
-    print("\nAvailable Vehicles:")
-    print(f"{'#':<3} {'Code':<15} {'Type':<15} {'Capacity (kg)':<15}")
-    print("=" * 50)
-
-    for i, v_id in enumerate(vehicles_list):
-        print(f"{i + 1:<3} {v_id:<15} {vehicle_types[i]:<15} {vehicle_capacities[i]:<15}")
-
-    # Get user selection - either by number or vehicle ID
-    while True:
-        selection = input("\nEnter the number or vehicle ID to update (or 'q' to return): ").strip().lower()
-
-        if selection in ['q', 'quit', 'Q']:
-            print("Update canceled. Returning to main menu...")
-            return True  # Return True to signal returning to main menu
-
-        # Handle selection by number
-        if selection.isdigit():
-            selection_num = int(selection)
-            if 1 <= selection_num <= len(vehicles_list):
-                veh_code = vehicles_list[selection_num - 1]
-                index = selection_num - 1
-                break
-            else:
-                print(f"Invalid selection. Please enter a number between 1 and {len(vehicles_list)}.")
-
-        # Handle selection by vehicle ID
-        elif selection.upper() in [v.upper() for v in vehicles_list]:
-            # Find the actual vehicle ID with matching case
-            for vehicle in vehicles_list:
-                if vehicle.upper() == selection.upper():
-                    veh_code = vehicle
-                    index = vehicles_list.index(veh_code)
-                    break
-            break
-
-        else:
-            print("Invalid selection. Vehicle not found.")
-
-    # Display current details of selected vehicle
-    print(f"\nUpdating Vehicle: {veh_code}")
-    print(f"Current Type: {vehicle_types[index]}")
-    print(f"Current Capacity: {vehicle_capacities[index]} kg")
-
-    # Valid vehicle types
-    VALID_VEHICLE_TYPES = ['truck', 'car', 'van', 'bus', 'motorcycle']
-
-    # Get updated vehicle type
-    while True:
-        new_type = input(
-            f"\nEnter new vehicle type ({', '.join(VALID_VEHICLE_TYPES)}) or press Enter to keep current (q to quit): ").strip()
-
-        # Check for quit command
-        if new_type.lower() in ['q', 'quit']:
-            print("Update canceled. Returning to main menu...")
-            return True  # Return True to signal returning to main menu
-
-        # Keep current if empty
-        if not new_type:
-            new_type = vehicle_types[index]
-            break
-
-        if new_type.lower() in VALID_VEHICLE_TYPES:
-            new_type = new_type.capitalize()  # Capitalize to match convention
-            break
-        else:
-            print(f"Invalid vehicle type. Please use one of: {', '.join(VALID_VEHICLE_TYPES)}")
-
-    # Get updated capacity
-    while True:
-        new_cap = input(
-            "Enter new capacity (kg or number of passengers) or press Enter to keep current (q to quit): ").strip()
-
-        # Check for quit command
-        if new_cap.lower() in ['q', 'quit']:
-            print("Update canceled. Returning to main menu...")
-            return True  # Return True to signal returning to main menu
-
-        # Keep current if empty
-        if not new_cap:
-            new_cap = vehicle_capacities[index]
-            break
-
-        try:
-            capacity = int(new_cap)
-            if capacity > 0 and capacity < 10000:  # Assuming max capacity is 10000
-                break
-            else:
-                print("Capacity must be a positive number less than 10000.")
-        except ValueError:
-            print("Invalid capacity. Please enter a numeric value.")
-
-    # Apply modifications to the vehicle data
-    vehicle_types[index] = new_type
-    vehicle_capacities[index] = str(new_cap)  # Convert to string to match existing format
-
-    # Confirmation message
-    print("\n===== Vehicle Updated Successfully =====")
-    print(f"Vehicle ID: {veh_code}")
-    print(f"Updated Type: {new_type}")
-    print(f"Updated Capacity: {new_cap}")
-
-    input("\nPress Enter to return to the main menu...")
-    return True  # Return True to signal returning to main menu
 
 def remove_vehicle():
     """Remove a vehicle record."""
