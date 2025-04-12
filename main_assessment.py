@@ -93,8 +93,7 @@ def main():
             shipment_management_menu()
         elif choice == "3" or choice.lower() == "delivery management":
             delivery_management_menu()
-        elif choice == "4" or choice.lower() == "quit application" or choice.lower() == "q" \
-                or choice.lower() == "Q":
+        elif choice == "4" or choice.lower() == "quit application" or choice.lower() == "q":
             print("Thank you for using the Fleet Management System. Goodbye!")
             break
         else:
@@ -135,8 +134,7 @@ def fleet_management_menu():
             remove_vehicle()
         elif choice == "4" or choice.lower() == "view fleet":
             view_fleet()
-        elif choice == "5" or choice.lower() == "quit fleet management" or choice.lower() == "q" \
-                or choice.lower() == "Q":
+        elif choice == "5" or choice.lower() == "quit fleet management" or choice.lower() == "q":
             print("Returning to main menu...")
             return
         else:
@@ -171,8 +169,7 @@ def shipment_management_menu():
             track_shipment()
         elif choice == "3" or choice.lower() == "view all shipments":
             view_shipments()
-        elif choice == "4" or choice.lower() == "quit shipment management" or choice.lower() == "q" \
-                or choice.lower() == "Q":
+        elif choice == "4" or choice.lower() == "quit shipment management" or choice.lower() == "q":
             print("Returning to main menu...")
             return
         else:
@@ -201,8 +198,7 @@ def delivery_management_menu():
             record_delivery()
         elif choice == "2" or choice.lower() == "view delivery status for a shipment":
             view_delivery_status()
-        elif choice == "3" or choice.lower() == "quit delivery management" or choice.lower() == "q" \
-                or choice.lower() == "Q":
+        elif choice == "3" or choice.lower() == "quit delivery management" or choice.lower() == "q":
             print("Returning to main menu...")
             return
         else:
