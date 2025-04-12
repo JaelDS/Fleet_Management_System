@@ -101,7 +101,7 @@ def main():
             print("Invalid option. Please try again.")
 
 
-# First section of the program
+# Fleet management menu with nested functions
 
 def fleet_management_menu():
     """
@@ -122,9 +122,15 @@ def fleet_management_menu():
 
         # Validate and process user input
         if choice == "1" or choice.lower() == "add vehicle":
-            add_vehicle()
+            # If add_vehicle returns True, it means we should return to main menu
+            if add_vehicle():
+                print("Returning to main menu...")
+                return
         elif choice == "2" or choice.lower() == "update vehicle information":
-            update_vehicle()
+            # If update_vehicle returns True, it means we should return to main menu
+            if update_vehicle():
+                print("Returning to main menu...")
+                return
         elif choice == "3" or choice.lower() == "remove a vehicle":
             remove_vehicle()
         elif choice == "4" or choice.lower() == "view fleet":
@@ -137,7 +143,7 @@ def fleet_management_menu():
             print("Invalid option. Please try again.")
 
 
-# Second section of the program
+# Shipment management menu with nested functions
 
 def shipment_management_menu():
     """
@@ -173,7 +179,7 @@ def shipment_management_menu():
             print("Invalid option. Please try again.")
 
 
-# Third section of the program
+# Delivery management menu with nested functions
 
 def delivery_management_menu():
     """
@@ -528,68 +534,180 @@ def view_shipments():
     input("\nPress Enter to continue...")
     return
 
-
 # === Fleet Management Functions ===
 
-# Replace the fleet management functions in the first code with these functions
-
+# Function that register a new vehicle.
+# Will validate all inputs and does not allow any empty or incorrect values.
 def add_vehicle():
-    """Register a new vehicle ensuring it has a unique identifier."""
-    veh_code = input("Enter Vehicle Code (e.g., V123): ")
-    # Checking if vehicle code format is correct
-    if not re.match(r"^V\d+$", veh_code):
-        # Check if the code of the vehicle does not match the pattern "V" followed by digits (V123)
-        print("Error: Vehicle Code must start with 'V' followed by digits.")
-        # Prints an error message if the code of the vehicle is not in correct format
-        return
+    """
+    Register a new vehicle ensuring it has a unique identifier.
+    Vehicle ID must start with 'V' and be exactly 7 characters long.
+    Vehicle type must contain only letters and spaces.
+    Capacity must be a positive integer.
+    No empty inputs are allowed.
+    Displays vehicle information after successful registration.
+    Returns True to signal that the function completed successfully and should return to main menu.
+    """
+    while True:
+        # Get and validate vehicle code
+        veh_code = input("Enter Vehicle Code (must start with 'V' and be 7 characters long): ").strip()
+
+        # Check if input is empty
+        if not veh_code:
+            print("Error: Vehicle Code cannot be empty.")
+            return False
+
+        # Check if vehicle code format is correct (starts with V and is 7 chars long)
+        if not re.match(r"^[Vv][A-Za-z0-9]{6}$", veh_code):
+            print("Error: Vehicle Code must start with 'V' and be exactly 7 characters long.")
+            return False
+
         # Ensuring uniqueness of vehicle code
-    if veh_code in vehicles_list:
-        print("Error: Vehicle Code already exists.")
-        return
-    veh_type = input("Enter Vehicle Type: ")  # Get vehicle type
-    veh_model = input("Enter Vehicle Model: ")  # Get model name
-    cap_veh = input("Enter Load Capacity (kg): ")  # Get vehicle load capacity
-    # Validate load capacity input
-    if not cap_veh.isdigit() or int(cap_veh) <= 0:
-        print("Error: Load capacity should be a positive number.")
-        return
-        # Add vehicle details to the lists
+        if veh_code.upper() in vehicles_list:
+            print("Error: Vehicle Code already exists. Please enter a different code.")
+            return False
+
+        # Input validation passed for vehicle code, proceed to next input
+        break
+
+    while True:
+        # Get and validate vehicle type
+        veh_type = input("Enter Vehicle Type (letters and spaces only): ").strip()
+
+        # Check if input is empty
+        if not veh_type:
+            print("Error: Vehicle Type cannot be empty.")
+            return False
+
+        # Check if vehicle type contains only letters and spaces
+        if not re.match(r"^[A-Za-z\s]+$", veh_type):
+            print("Error: Vehicle Type must contain only letters and spaces.")
+            return False
+
+        # Input validation passed for vehicle type, proceed to next input
+        break
+
+    while True:
+        # Get and validate capacity
+        cap_veh = input("Enter Load Capacity (kg, positive integer only): ").strip()
+
+        # Check if input is empty
+        if not cap_veh:
+            print("Error: Load Capacity cannot be empty.")
+            return False
+
+        # Validate load capacity input (must be a positive integer)
+        if not cap_veh.isdigit() or int(cap_veh) <= 0:
+            print("Error: Load Capacity must be a positive integer.")
+            return False
+
+        # Input validation passed for capacity
+        break
+
+    # All inputs are valid, add vehicle details to the lists
+    veh_code = veh_code.upper()
+    veh_type = veh_type.title()
+
     vehicles_list.append(veh_code)
     vehicle_types.append(veh_type)
     vehicle_capacities.append(cap_veh)
     vehicle_availability.append(True)
-    print("Vehicle successfully registered.")
 
+    # Display the newly registered vehicle information
+    print("\n===== Vehicle Successfully Registered =====")
+    print(f"Vehicle Code: {veh_code}")
+    print(f"Vehicle Type: {veh_type}")
+    print(f"Load Capacity: {cap_veh} kg")
+    print(f"Available: Yes")
+    print("=" * 40)
+
+    input("\nPress Enter to return to the main menu...")
+
+    # Return True to signal successful completion and return to main menu
+    return True
+
+# Function to update information to any vehicle ID
 
 def update_vehicle():
-    """Update vehicle specifications."""
-    veh_code = input("Kindly Provide Vehicle Code for update: ")  # Identify vehicle to modify
-    if veh_code in vehicles_list:
-        index = vehicles_list.index(veh_code)
-        new_type = input("Kindly Provide updated Vehicle Type: ")
-        new_model = input("Kindly Provide updated Model: ")  # Enter updated model
-        new_cap = input("Kindly Provide updated Load capacity (kg): ")  # Enter new load capacity
-        # Checking new capacity validity
-        if not new_cap.isdigit() or int(new_cap) <= 0:
-            print("Error: Capacity must be a valid positive number.")
-            return
-            # Apply modifications
-        vehicle_types[index] = new_type
-        # Note: Since there's no explicit vehicle_models list in your example,
-        # we'll skip storing the model update
-        vehicle_capacities[index] = new_cap
-        print("Vehicle details updated successfully.")
-        return
-    print("Error: No matching vehicle found.")
+    """
+    Update vehicle specifications.
+    Validates inputs similar to add_vehicle but allows empty inputs to keep current data.
+    Shows vehicle details before and after updating.
+    Returns to main menu on successful update, fleet management menu otherwise.
+    """
+    # Get vehicle code to update
+    veh_code = input("Enter Vehicle Code to update: ").strip()
 
+    # Check if the vehicle exists
+    if veh_code not in vehicles_list:
+        print("Error: No matching vehicle found.")
+        return False
+
+    # Get the index of the vehicle
+    index = vehicles_list.index(veh_code)
+
+    # Display current vehicle information
+    print("\nCurrent Vehicle Information:")
+    print(f"Vehicle Code: {vehicles_list[index]}")
+    print(f"Vehicle Type: {vehicle_types[index]}")
+    print(f"Load Capacity: {vehicle_capacities[index]} kg")
+    print(f"Available: {'Yes' if vehicle_availability[index] else 'No'}")
+    print("\nEnter new details (leave blank to keep current value):")
+
+    # Get and validate new type
+    while True:
+        new_type = input("Enter new Vehicle Type (letters and spaces only): ").strip()
+
+        # If empty, keep current value
+        if not new_type:
+            new_type = vehicle_types[index]
+            break
+
+        # Validate type format
+        if not re.match(r"^[A-Za-z\s]+$", new_type):
+            print("Error: Vehicle Type must contain only letters and spaces.")
+            return
+
+        break
+
+    # Get and validate new capacity
+    while True:
+        new_cap = input("Enter new Load Capacity (kg, positive integer only): ").strip()
+
+        # If empty, keep current value
+        if not new_cap:
+            new_cap = vehicle_capacities[index]
+            break
+
+        # Validate capacity format
+        if not new_cap.isdigit() or int(new_cap) <= 0:
+            print("Error: Load Capacity must be a positive integer.")
+            return
+
+        break
+
+    # Apply the changes
+    vehicle_types[index] = new_type.title()
+    vehicle_capacities[index] = new_cap
+
+    # Display updated information
+    print("\nVehicle Updated Successfully!")
+    print("\nUpdated Vehicle Information:")
+    print(f"Vehicle Code: {vehicles_list[index]}")
+    print(f"Vehicle Type: {vehicle_types[index]}")
+    print(f"Load Capacity: {vehicle_capacities[index]} kg")
+    print(f"Available: {'Yes' if vehicle_availability[index] else 'No'}")
+
+    # Return to main menu
+    return True
 
 def remove_vehicle():
     """Remove a vehicle record."""
-    veh_code = input("Enter Vehicle Code to delete: ")  # Identify vehicle to delete
+    veh_code = input("Enter Vehicle Code to delete: ").upper()  # Identify vehicle to delete
     if veh_code in vehicles_list:
         index = vehicles_list.index(veh_code)
         confirmation = input("Confirm deletion? (yes/no): ").strip().lower()
-        if confirmation == "yes":
+        if confirmation == "yes" or confirmation == "y":
             # Check if vehicle is assigned to any shipments
             if veh_code in vehicles_selected:
                 print("Error: Cannot remove vehicle as it is assigned to shipments.")
