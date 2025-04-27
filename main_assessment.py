@@ -4,6 +4,7 @@ import re
 # We will use datetime to set real date and times in the program, as is required.
 import datetime
 
+
 # Define menu options as tuples because data is immutable
 main_menu = ("fleet management", "shipment management", "delivery management", "quit application")
 fleet_menu = ("add vehicle", "update vehicle information", "remove a vehicle", "view fleet", "quit fleet management")

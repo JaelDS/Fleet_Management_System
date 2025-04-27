@@ -9,6 +9,10 @@ including fleet, customers, shipments, and deliveries.
 Data Storage: This system uses dictionaries to store and manage data, which offers
 fast lookups by ID and flexible storage of varying data structures.
 """
+import random
+import string
+import datetime
+import re
 
 
 class DataStore:
@@ -20,13 +24,35 @@ class DataStore:
 
     def __init__(self):
         self.data = {}  # Dictionary to store items with their IDs as keys
-        self.last_id = 0  # Track the last assigned ID for auto-incrementing
+        self.__last_id = 0  # Private attribute to track the last assigned ID (not used for random IDs)
 
     def add(self, item):
-        """Add an item to the data store with auto-generated ID"""
-        self.last_id += 1
-        item_id = str(self.last_id)
-        item.id = item_id  # Set the ID on the item
+        """Add an item to the data store with auto-generated ID
+
+        The ID will be randomly generated, 8 characters long, and prefixed with
+        a letter indicating the type of the object (V, C, S, D, or I).
+        """
+        # Determine the prefix based on item type
+        if isinstance(item, Vehicle):
+            prefix = "V"
+        elif isinstance(item, Customer):
+            prefix = "C"
+        elif isinstance(item, Shipment):
+            prefix = "S"
+        elif isinstance(item, Delivery):
+            prefix = "D"
+        else:
+            prefix = "I"  # For any other item types
+
+        # Generate random alphanumeric part (7 characters to make total length 8 with prefix)
+        alphabet = string.ascii_uppercase + string.digits
+        random_part = ''.join(random.choices(alphabet, k=7))
+
+        # Create the full ID
+        item_id = f"{prefix}{random_part}"
+
+        # Set the ID on the item and store it
+        item.id = item_id
         self.data[item_id] = item
         return item_id
 
@@ -74,7 +100,7 @@ class Menu:
 
     def display(self):
         """Display the menu options"""
-        print(f"\n=== {self.title} ===")
+        print(f"\n===== {self.title} =====")
         for option in self.options:
             print(f"{option['number']}. {option['description']}")
 
@@ -82,7 +108,8 @@ class Menu:
         """Execute the menu and handle user input"""
         while True:
             self.display()
-            choice = input("\nEnter your choice: ")
+            choice = input("\nSelect the menu to display (You can choose either the name "
+                           "or the number of the desired menu): ")
 
             # Check if user wants to quit
             if choice in self.quit_options:
@@ -105,7 +132,7 @@ class Menu:
             if selected:
                 selected['function']()
             else:
-                print("Invalid choice. Please try again.")
+                print("Invalid option. Please try again.")
 
 
 # Base data classes
@@ -204,6 +231,7 @@ class FleetMenu(Menu):
     def __init__(self, vehicle_store):
         super().__init__("Fleet Management")
         self.vehicle_store = vehicle_store  # Reference to the vehicle data store
+        self.__status = "Available"
 
         # Add menu options
         self.add_option('1', 'Add a vehicle', self.add_vehicle)
@@ -217,9 +245,29 @@ class FleetMenu(Menu):
         print("\n=== Add a New Vehicle ===")
 
         # Get vehicle details from user
-        vehicle_type = input("Enter vehicle type: ")
-        capacity = input("Enter vehicle capacity: ")
-        status = input("Enter vehicle status (or press Enter for 'Available'): ") or "Available"
+        # Validate vehicle type
+        while True:
+            vehicle_type = input("Enter vehicle type: ").title()
+            if (re.match(r'^[a-zA-Z][a-zA-Z\s]*$', vehicle_type)
+                and len(vehicle_type) >= 3):
+                break
+            else:
+                print(
+                    "Error: The vehicle type must contain only "
+                    "letters or spaces and be at least 3 characters long.")
+
+        # Validate capacity (similar pattern)
+        while True:
+            capacity = input("Enter vehicle capacity: ")
+            # Simple check that it's not empty and is a digit
+            if (capacity.strip() and re.match(r'^\S*\d+(\.\d+)?$', capacity)):
+                if int(capacity) > 0 or float(capacity) > 0:
+                    break
+                else:
+                    print("Error: The input should be greater than 0.")
+            else:
+                print("Error: Capacity cannot be empty or should be a number.")
+        status = self.__status
 
         # Create new vehicle object
         vehicle = Vehicle(type=vehicle_type, capacity=capacity, status=status)
@@ -245,8 +293,25 @@ class FleetMenu(Menu):
         vehicle.display_info()
 
         # Get updated information
-        vehicle_type = input(f"Enter new type (or press Enter to keep '{vehicle.type}'): ") or vehicle.type
-        capacity = input(f"Enter new capacity (or press Enter to keep '{vehicle.capacity}'): ") or vehicle.capacity
+        while True:
+            vehicle_type = input(f"Enter new type (or press Enter to keep '{vehicle.type}'): ").title() or vehicle.type
+            if (re.match(r'^[a-zA-Z][a-zA-Z\s]*$', vehicle_type)
+                and len(vehicle_type) >= 3):
+                break
+            else:
+                print(
+                    "Error: The vehicle type must contain only "
+                    "letters or spaces and be at least 3 characters long.")
+        while True:
+            capacity = input(f"Enter new capacity (or press Enter to keep '{vehicle.capacity}'): ") or vehicle.capacity
+            # Simple check that it's not empty and is a digit
+            if (capacity.strip() and re.match(r'^\S*\d+(\.\d+)?$', capacity)):
+                if int(capacity) > 0 or float(capacity) > 0:
+                    break
+                else:
+                    print("Error: The input should be greater than 0.")
+            else:
+                print("Error: Capacity cannot be empty or should be a number.")
         status = input(f"Enter new status (or press Enter to keep '{vehicle.status}'): ") or vehicle.status
 
         # Update vehicle object
