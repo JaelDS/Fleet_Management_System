@@ -5,14 +5,13 @@
 The Fleet Management System (FMS) is a comprehensive software solution designed to streamline the management of vehicle fleets, shipments, and deliveries. This user-friendly application allows businesses to efficiently track vehicles, manage shipments, and monitor delivery statuses through an intuitive command-line interface.
 
 ```
-    _______           _                   
-   |  _____|         | |                  
-   | |_     _ __ ___ | |     ___  ___ ___ 
-   |  _|   | '_ ` _ \| |    / _ \/ __/ __| 
-   | |     | | | | | | |___| (_) \__ \__ \
-   |_|     |_| |_| |_|______\___/|___/___/
-                                         
-   Fleet Management System in Python
+ _____ __  __  ____  
+|  ___|  \/  |/ ___| 
+| |_  | |\/| | \___ \
+|  _| | |  | |  ___) |
+|_|   |_|  |_||____/ 
+                     
+Fleet Management System in Python
 ```
 
 ## Features
