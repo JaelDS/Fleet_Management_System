@@ -5,15 +5,16 @@
 The Logistics Management System (LMS) represents a significant evolution from the original Fleet Management System (FMS). This document outlines the transformation from a basic procedural program to a sophisticated object-oriented application that provides enhanced functionality, better data management, and improved user experience.
 
 ```
-    _______           _                   
-   |  _____|         | |                  
-   | |_     _ __ ___ | |     ___  ___ ___ 
-   |  _|   | '_ ` _ \| |    / _ \/ __/ __| 
-   | |     | | | | | | |___| (_) \__ \__ \
-   |_|     |_| |_| |_|______\___/|___/___/
-                                         
-   Logistics Management System in Python
+ _      __  __  ____  
+| |    |  \/  |/ ___| 
+| |    | |\/| | \___ \
+| |___ | |  | |  ___) |
+|_____||_|  |_||____/ 
+                      
+Logistics Management System in Python
 ```
+  
+   Logistics Management System in Python
 
 ## Evolution from FMS to LMS: Key Transformations
 
@@ -308,6 +309,20 @@ This project is licensed under Torrens University Australia - see [Torrens Unive
 
 ---
 
-<p align="center">
-  Code crafted with ♥ by Jael & Patrick
-</p>
+<!-- README.md -->
+# Logistic Management System
+
+<!-- For GitHub's dark mode -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=00FF41&center=true&vCenter=true&width=650&lines=Code+crafted+by+@JaelDS+%26+@PatrickGP23;Creating+practical+solutions;Since+2025">
+  <img alt="Typing SVG" src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=2F9C5A&center=true&vCenter=true&width=650&lines=Code+crafted+by+@JaelDS+%26+@PatrickGP23;Creating+practical+solutions;Since+2025">
+</picture>
+
+<div align="center">
+  
+  <!-- All badges standardized to flat-square style -->
+  <img src="https://img.shields.io/badge/Made%20with-🖤-lightgrey?style=flat-square&logo=github" alt="Made with Love" />
+  <img src="https://img.shields.io/badge/Made%20with-Python-blue?style=flat-square&logo=python" alt="Made with Python" />
+  <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status Active" />
+  
+</div>
