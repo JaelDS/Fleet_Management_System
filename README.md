@@ -1,8 +1,8 @@
-# Fleet Management System (FMS)
+# Fleet Management System (FMS) - Evolution to Logistics Management System (LMS)
 
 ## Overview
 
-The Fleet Management System (FMS) is a comprehensive software solution designed to streamline the management of vehicle fleets, shipments, and deliveries. This user-friendly application allows businesses to efficiently track vehicles, manage shipments, and monitor delivery statuses through an intuitive command-line interface.
+The Logistics Management System (LMS) represents a significant evolution from the original Fleet Management System (FMS). This document outlines the transformation from a basic procedural program to a sophisticated object-oriented application that provides enhanced functionality, better data management, and improved user experience.
 
 ```
     _______           _                   
@@ -12,152 +12,285 @@ The Fleet Management System (FMS) is a comprehensive software solution designed 
    | |     | | | | | | |___| (_) \__ \__ \
    |_|     |_| |_| |_|______\___/|___/___/
                                          
-   Fleet Management System in Python
+   Logistics Management System in Python
 ```
 
-## Features
+## Evolution from FMS to LMS: Key Transformations
 
-The system is organized into three main modules:
+### 1. Programming Paradigm Shift
 
-### 1. Fleet Management
-- **Add Vehicle**: Register new vehicles with unique IDs, types, and capacities
-- **Update Vehicle Information**: Modify existing vehicle details
-- **Remove Vehicle**: Delete vehicles no longer in service (with safety checks to prevent removing vehicles assigned to active shipments)
-- **View Fleet**: Display comprehensive information about all vehicles in the fleet
+#### **Before (FMS - main_assessment.py)**
+- **Procedural Programming**: The original system used a linear, function-based approach
+- **Global Lists**: Data was stored in global lists (vehicles_list, shipment_ids_list, etc.)
+- **Limited Structure**: Functions operated directly on global data
 
-### 2. Shipment Management
-- **Create a New Shipment**: Generate shipments with origin, destination, weight, and assigned vehicle
-- **Track a Shipment**: Monitor the current status of any shipment using its unique ID
-- **View All Shipments**: Get a complete overview of all shipments in the system
+```python
+# Example from FMS
+vehicles_list = ["VTRUCK1", "VCAR123", "V2TRUCK"]
+vehicle_types = ["Truck", "Car", "Truck"]
+vehicle_capacities = ["5000", "500", "3500"]
+```
 
-### 3. Delivery Management
-- **Record Delivery**: Mark shipments as delivered with automatically generated timestamps
-- **View Delivery Status**: Check detailed delivery information for any shipment
+#### **After (LMS - LMS.py)**
+- **Object-Oriented Programming (OOP)**: Complete redesign using classes and objects
+- **Encapsulation**: Data is encapsulated within objects with dedicated methods
+- **Enhanced Organization**: Clear separation of concerns with class hierarchies
+
+```python
+# Example from LMS
+class Vehicle:
+    def __init__(self, vehicle_id=None, type=None, capacity=None, status="Available"):
+        self.id = vehicle_id
+        self.type = type
+        self.capacity = capacity
+        self.status = status
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+```
+
+### 2. Data Management Revolution
+
+#### **Before (FMS)**
+- **Parallel Lists**: Related data stored in separate lists
+- **Index-based Relationships**: Data connected by matching indices
+- **Limited Data Integrity**: Prone to synchronization errors
+
+#### **After (LMS)**
+- **Centralized DataStore**: Professional data management system
+- **Dictionary-based Storage**: Fast lookups and reliable data access
+- **Automatic ID Generation**: Unique identifiers generated automatically
+
+```python
+class DataStore:
+    def __init__(self):
+        self.data = {}  # Dictionary for efficient storage
+        
+    def add(self, item):
+        # Automatic ID generation based on object type
+        if isinstance(item, Vehicle):
+            prefix = "V"
+        elif isinstance(item, Customer):
+            prefix = "C"
+        # ... more type checks
+        
+        item_id = f"{prefix}{random_part}"
+        self.data[item_id] = item
+        return item_id
+```
+
+### 3. User Experience Enhancements
+
+#### **Before (FMS)**
+- **Basic Text Interface**: Simple menu with numbered options
+- **Limited Error Handling**: Basic validation with minimal feedback
+- **No Visual Appeal**: Plain text output
+
+#### **After (LMS)**
+- **Professional Interface**: Color-coded menus using Colorama
+- **Comprehensive Validation**: Detailed error messages and recovery options
+- **Enhanced Visuals**: Formatted output with colors and borders
+
+```python
+# LMS includes beautiful output formatting
+def display_signature():
+    border = Fore.CYAN
+    code = Fore.MAGENTA
+    # ... more color definitions
+    
+    print(f"{border}╔{'═' * (content_length + 2)}╗{reset}")
+    print(f"{side_border} {content} {side_border}")
+    print(f"{border}╚{'═' * (content_length + 2)}╝{reset}")
+```
+
+### 4. Customer Management System (New in LMS)
+
+#### **Added Features**
+- **Complete Customer Profiles**: Name, birthday, address, email, phone
+- **Australian Address Validation**: Specific format for Australian addresses
+- **Age Verification**: Ensures customers are 18 or older
+- **Email and Phone Validation**: Professional contact information verification
+
+```python
+# Advanced validation example
+address_pattern = r"""
+    ^
+    (?:(?:Unit|Apt|Apartment|Flat)\s*\d+[a-zA-Z]?[/\-\s]+)?  # Optional unit
+    \d+[a-zA-Z]?(?:\s*-\s*\d+[a-zA-Z]?)?                     # Street number
+    \s+
+    (?:[A-Za-z][A-Za-z']+(?:\s+[A-Za-z][A-Za-z']+)*)         # Street name
+    \s+
+    (?:Street|St|Road|Rd|Avenue|Ave|...)                      # Street type
+    \s*,?\s*
+    [A-Za-z][A-Za-z\s'-]+                                    # Suburb
+    \s+
+    (?:NSW|VIC|QLD|SA|WA|TAS|NT|ACT)                        # State
+    \s+
+    \d{4}                                                    # Postcode
+    $
+"""
+```
+
+### 5. Advanced Shipment Management
+
+#### **Before (FMS)**
+- **Basic Tracking**: Simple status generation
+- **Limited Information**: Minimal shipment details
+- **No Delivery Prediction**: No estimated delivery dates
+
+#### **After (LMS)**
+- **Smart Tracking**: Status based on multiple factors
+- **Delivery Predictions**: Simulated delivery dates based on weight, vehicle, and distance
+- **Customer Integration**: Links shipments to customer profiles
+- **Vehicle Capacity Check**: Only shows vehicles that can handle shipment weight
+
+```python
+def calculate_simulated_delivery_date(self, shipment):
+    # Intelligent delivery date calculation
+    transit_days = 2  # Base transit time
+    
+    # Factor 1: Weight impact
+    if shipment.weight > 100:
+        transit_days += 2
+        
+    # Factor 2: Vehicle type impact
+    vehicle_delays = {
+        'Motorcycle': -1,  # Faster
+        'Van': 0,
+        'Truck': 1,
+        'Cargo Ship': 5,
+        'Airplane': -2  # Fastest
+    }
+    # ... more calculations
+```
+
+### 6. Professional Fleet Management
+
+#### **Improvements**
+- **Vehicle Status Tracking**: Available, On Delivery, Maintenance
+- **Capacity Management**: Validates vehicle can carry shipment weight
+- **Enhanced Validation**: Stricter input validation for vehicle data
+- **Date Tracking**: Records when vehicles are added to the system
+
+### 7. Modern Delivery System
+
+#### **New Features**
+- **Automatic Timestamps**: Records exact delivery time
+- **Status Updates**: Real-time delivery status tracking
+- **Delivery Confirmation**: Professional delivery confirmation screen
+- **Integrated Tracking**: Links with shipment and customer data
+
+### 8. Technical Architecture Improvements
+
+#### **Code Structure**
+- **Modular Design**: Each component is self-contained
+- **Inheritance**: Menu classes inherit from base Menu class
+- **Code Reusability**: Common functions shared across modules
+- **Error Recovery**: Better error handling and recovery options
+
+```python
+class Menu:
+    """Base Menu class that all submenus inherit from"""
+    def __init__(self, title):
+        self.title = title
+        self.options = []
+        
+    def execute(self):
+        """Execute the menu and handle user input"""
+        # Standardized menu execution logic
+```
+
+## Benefits for Non-Technical Users
+
+### 1. **Easier to Use**
+- Color-coded menus make navigation intuitive
+- Better error messages guide users to correct inputs
+- Professional formatting improves readability
+
+### 2. **More Reliable**
+- Data is stored more securely
+- Automatic ID generation prevents duplicates
+- Better validation reduces errors
+
+### 3. **More Features**
+- Complete customer management
+- Smart delivery predictions
+- Professional tracking system
+- Enhanced reporting capabilities
+
+### 4. **Future-Ready**
+- Object-oriented design allows easy expansion
+- Can easily add database support
+- Ready for web interface integration
+- Scalable to handle more data
 
 ## Getting Started
 
 ### Prerequisites
 - Python 3.6 or later
+- colorama library (for colored output)
 
 ### Installation
 1. Clone or download the repository to your local machine
-2. Navigate to the project directory
-3. Run the program using Python:
+2. Install required dependencies:
    ```
-   python fms.py
+   pip install colorama
+   ```
+3. Navigate to the project directory
+4. Run the program using Python:
+   ```
+   python LMS.py
    ```
 
-## User Guide
+## Features Overview
 
-### Navigation
-The FMS uses a menu-driven interface. Navigate through the system by entering the option number or typing the option name.
+### Customer Management (New in LMS)
+- **Add Customer**: Register new customers with complete profiles
+- **Update Customer Information**: Modify existing customer details
+- **Remove Customer**: Delete customer records (with safety checks)
+- **View All Customers**: Display comprehensive customer information
+- **View Customer Shipments**: See all shipments for a specific customer
 
-### Vehicle Management
+### Fleet Management (Enhanced)
+- **Add Vehicle**: Register vehicles with enhanced validation
+- **Update Vehicle Information**: Modify vehicle details with better controls
+- **Remove Vehicle**: Delete vehicles with shipment safety checks
+- **View Fleet**: Display fleet information with improved formatting
 
-#### Adding a Vehicle
-1. Select "Fleet Management" from the main menu
-2. Choose "Add Vehicle"
-3. Enter the vehicle details:
-   - Vehicle ID (format: VXXXXXX, e.g., VTRUCK1)
-   - Vehicle Type (e.g., Truck, Van, Car)
-   - Load Capacity in kilograms
+### Shipment Management (Enhanced)
+- **Create New Shipment**: Generate shipments with customer integration
+- **Track Shipment**: Enhanced tracking with delivery predictions
+- **View All Shipments**: Comprehensive shipment overview with status
 
-#### Updating Vehicle Information
-1. Select "Fleet Management" from the main menu
-2. Choose "Update Vehicle Information"
-3. Enter the Vehicle ID to update
-4. Provide new details (or press Enter to keep current values):
-   - New Vehicle ID (optional)
-   - New Vehicle Type (optional)
-   - New Load Capacity (optional)
+### Delivery Management (Enhanced)
+- **Record Delivery**: Mark shipments as delivered with automatic timestamps
+- **View Delivery Status**: Check detailed delivery information
 
-#### Viewing Fleet Information
-1. Select "Fleet Management" from the main menu
-2. Choose "View Fleet"
-3. Review the tabular display of all vehicles with their details
+## Technical Comparison Table
 
-### Shipment Management
+| Feature | FMS (Original) | LMS (Enhanced) |
+|---------|----------------|----------------|
+| Programming Paradigm | Procedural | Object-Oriented |
+| Data Storage | Global Lists | DataStore with Dictionaries |
+| ID Generation | Manual Input | Automatic Random IDs |
+| Customer Management | None | Full Customer Profiles |
+| Validation | Basic | Comprehensive Regex Patterns |
+| User Interface | Plain Text | Color-coded with Formatting |
+| Error Handling | Basic | Advanced with Recovery |
+| Delivery Prediction | None | Smart Algorithm |
+| Code Structure | Linear Functions | Modular Classes |
+| Extensibility | Limited | Highly Extensible |
 
-#### Creating a Shipment
-1. Select "Shipment Management" from the main menu
-2. Choose "Create a New Shipment"
-3. Enter shipment details:
-   - Origin address (format: Street, City, State)
-   - Destination address (format: Street, City, State)
-   - Package weight in kilograms
-   - Select a vehicle from the fleet
+## Conclusion
 
-#### Tracking a Shipment
-1. Select "Shipment Management" from the main menu
-2. Choose "Track a Shipment"
-3. Enter the Shipment ID (format: AXXXXXXXXXXXXXX)
-4. View the current status, location, and estimated delivery information
+The evolution from FMS to LMS represents a complete transformation from a basic procedural program to a professional, object-oriented logistics management system. The new system is more reliable, user-friendly, and feature-rich, providing a solid foundation for future enhancements and business growth.
 
-### Delivery Management
+The LMS demonstrates best practices in software development, including:
+- Object-oriented design principles
+- Professional data management
+- Enhanced user experience
+- Comprehensive input validation
+- Modular, maintainable code structure
 
-#### Recording a Delivery
-1. Select "Delivery Management" from the main menu
-2. Choose "Record Delivery for a Shipment"
-3. Enter the Shipment ID to mark as delivered
-4. The system will generate a delivery timestamp and update the status
-
-#### Checking Delivery Status
-1. Select "Delivery Management" from the main menu
-2. Choose "View Delivery Status for a Shipment"
-3. Enter the Shipment ID to check
-4. View comprehensive delivery information
-
-## Technical Details
-
-### Data Structures
-
-The FMS uses several synchronized lists to store information:
-
-#### Fleet Management
-- `vehicles_list`: Stores unique vehicle IDs
-- `vehicle_types`: Stores the type of each vehicle (parallel to vehicles_list)
-- `vehicle_capacities`: Stores the capacity of each vehicle in kg (parallel to vehicles_list)
-- `vehicle_availability`: Tracks whether each vehicle is available for assignment
-
-#### Shipment Management
-- `origins_list`: Stores shipment origin addresses
-- `destinations_list`: Stores shipment destination addresses
-- `weights_list`: Stores package weights
-- `vehicles_selected`: Stores the vehicle assigned to each shipment
-- `shipment_ids_list`: Stores unique shipment IDs
-
-#### Delivery Management
-- `delivery_status`: Tracks whether each shipment is "pending" or "delivered"
-- `delivery_datetime`: Stores the delivery timestamp for each shipment
-
-### ID Generation
-
-- **Vehicle IDs**: Follow the format VXXXXXX (V followed by 6 alphanumeric characters)
-- **Shipment IDs**: Generated using a deterministic algorithm that creates a unique 15-character ID starting with "A"
-
-### Input Validation
-
-The system includes comprehensive validation for all user inputs:
-- Address validation ensures proper format (Street, City, State)
-- Weight validation ensures numeric values
-- Vehicle ID validation ensures proper format and uniqueness
-- Shipment ID validation ensures proper format and existence
-
-### Timestamp Generation
-
-The system generates timestamps for shipments and deliveries using a deterministic algorithm based on the shipment ID, ensuring consistency without relying on external libraries.
-
-## Limitations and Future Improvements
-
-- **Database Integration**: Currently, data is stored in memory and lost when the program ends. Future versions will include database integration for persistent storage.
-- **User Authentication**: A login system will be added to manage user access and permissions.
-- **Graphical User Interface**: A GUI will be developed to enhance user experience.
-- **Reporting Capabilities**: Advanced reporting features will be added to generate statistics and insights.
-- **Real-time Tracking**: Integration with GPS systems for real-time vehicle and shipment tracking.
-
-## Contributing
-
-Contributions to the Fleet Management System are welcome! Please feel free to submit pull requests or open issues to suggest improvements or report bugs.
+This transformation makes the system not just more powerful, but also more accessible to users of all technical levels while maintaining the flexibility needed for future growth.
 
 ## License
 
@@ -169,5 +302,12 @@ This project is licensed under Torrens University Australia - see [Torrens Unive
 
 ## Acknowledgments
 
-- Developed by Torrens students [José Antonio Escalante López. Michael Gomez Paucar and Abrar Quadri Shaik]
-- All information is simulated and "randomly" created.
+- Original FMS developed by Torrens students [José Antonio Escalante López, Michael Gomez Paucar, and Abrar Quadri Shaik]
+- Enhanced LMS developed by Jose Antonio Escalante Lopez and Michael Gomez Paucar with object-oriented principles and professional software engineering practices
+- All information is simulated for educational purposes
+
+---
+
+<p align="center">
+  Code crafted with ♥ by Jael & Patrick
+</p>
