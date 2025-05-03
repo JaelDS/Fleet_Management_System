@@ -14,7 +14,8 @@ import string
 import datetime
 import re
 
-from IPython.core.release import author
+# Library needed for the signature displayed at the end of the program.
+
 from colorama import Fore, Style, init
 
 # Initialize colorama
