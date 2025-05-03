@@ -220,13 +220,12 @@ class Customer:
 class Shipment:
     """Class representing a shipment."""
 
-    def __init__(self, shipment_id=None, customer_id=None, origin=None, destination=None,
-                 contents=None, weight=None, vehicle_id=None):
+    def __init__(self, shipment_id=None, customer_id=None,
+                 origin=None, destination=None, weight=None, vehicle_id=None):
         self.id = shipment_id  # This will be set by the DataStore when added
         self.customer_id = customer_id
         self.origin = origin
         self.destination = destination
-        self.contents = contents
         self.weight = weight
         self.vehicle_id = vehicle_id
         self.status = "Pending"  # Initial status
@@ -238,7 +237,6 @@ class Shipment:
         print(f"Customer: {customer_name if customer_name else self.customer_id}")
         print(f"Origin: {self.origin}")
         print(f"Destination: {self.destination}")
-        print(f"Contents: {self.contents}")
         print(f"Weight: {self.weight}")
         print(f"Vehicle: {vehicle_type if vehicle_type else self.vehicle_id}")
         print(f"Status: {self.status}")
@@ -448,11 +446,10 @@ class CustomerMenu(Menu):
         print("\n=== Add a New Customer ===")
 
         # Get customer details from user
-
         while True:
             name = input("Enter customer name (first and last name): ").title()
             # Check if name has at least two words
-            words = name.title().split()
+            words = name.split()
             if (re.match(r'^[a-zA-Z][a-zA-Z\s]*$', name)
                     and len(words) >= 2
                     and len(name) >= 6):
@@ -464,9 +461,9 @@ class CustomerMenu(Menu):
                     "and be at least 6 characters long.")
 
         while True:
-            date_str = input("Enter birthday (yyyy-mm-dd): ")
+            date_str = input("Enter birthday (dd-mm-yyyy): ")
             try:
-                d = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+                d = datetime.datetime.strptime(date_str, '%d-%m-%Y')
                 today = datetime.datetime.now()
 
                 # Check if date is in the future
@@ -486,7 +483,7 @@ class CustomerMenu(Menu):
 
                 break
             except ValueError:
-                print("Invalid date format! Please use yyyy/mm/dd format.")
+                print("Invalid date format! Please use dd-mm-yyyy format.")
 
         while True:
             address = input("Enter Australian address: ").title().strip()
@@ -562,8 +559,8 @@ class CustomerMenu(Menu):
                 "Examples: 0412 345 678, (02) 1234 5678, +61 412 345 678"
             )
 
-        # Create new customer object
-        customer = Customer(name=name, birthday=d, address=address, email=email, phone=phone)
+        # Create new customer object - Format the date as string
+        customer = Customer(name=name, birthday=d.strftime('%d-%m-%Y'), address=address, email=email, phone=phone)
 
         # Add to data store
         customer_id = self.customer_store.add(customer)
@@ -582,22 +579,162 @@ class CustomerMenu(Menu):
             return
 
         # Display current info
-        print("Current customer information:")
+        print("\nCurrent customer information:")
         customer.display_info()
+        print()
 
-        # Get updated information
-        name = input(f"Enter new name (or press Enter to keep '{customer.name}'): ") or customer.name
-        contact = input(f"Enter new contact (or press Enter to keep '{customer.contact}'): ") or customer.contact
-        address = input(f"Enter new address (or press Enter to keep '{customer.address}'): ") or customer.address
+        # Name validation
+        while True:
+            new_name = input(f"Enter new name (or press Enter to keep '{customer.name}'): ").title()
+
+            if not new_name:  # Keep existing name
+                new_name = customer.name
+                break
+
+            # Check if name has at least two words
+            words = new_name.split()
+            if (re.match(r'^[a-zA-Z][a-zA-Z\s]*$', new_name)
+                    and len(words) >= 2
+                    and len(new_name) >= 6):
+                break
+            else:
+                print(
+                    "The customer name must contain at least two words "
+                    "(first and last name), only letters or spaces, "
+                    "and be at least 6 characters long.")
+
+        # Birthday validation - USE dob attribute and format properly!
+        while True:
+            date_str = input(f"Enter new birthday dd-mm-yyyy (or press Enter to keep current): ")
+
+            if not date_str:  # Keep existing birthday
+                new_birthday = customer.dob  # Keep as string
+                break
+
+            try:
+                d = datetime.datetime.strptime(date_str, '%d-%m-%Y')
+                today = datetime.datetime.now()
+
+                # Check if date is in the future
+                if d > today:
+                    print("Birthday cannot be in the future!")
+                    continue
+
+                # Check if age is reasonable (not over 120 years)
+                age = today.year - d.year - ((today.month, today.day) < (d.month, d.day))
+                if age > 120:
+                    print("Please enter a valid birthday (age cannot exceed 120 years).")
+                    continue
+
+                if age < 18:
+                    print("You are under 18 years. You need to be over 18 years to use the program.")
+                    continue
+
+                new_birthday = d.strftime('%d-%m-%Y')  # Format as dd-mm-yyyy string
+                break
+            except ValueError:
+                print("Invalid date format! Please use dd-mm-yyyy format.")
+
+        # Address validation
+        while True:
+            new_address = input(f"Enter new address (or press Enter to keep current): ").title().strip()
+
+            if not new_address:  # Keep existing address
+                new_address = customer.address
+                break
+
+            # Define the address pattern
+            address_pattern = r"""
+                ^
+                (?:(?:Unit|Apt|Apartment|Flat)\s*\d+[a-zA-Z]?[/\-\s]+)?  # Optional unit
+                \d+[a-zA-Z]?(?:\s*-\s*\d+[a-zA-Z]?)?                     # Street number
+                \s+
+                (?:[A-Za-z][A-Za-z']+(?:\s+[A-Za-z][A-Za-z']+)*)         # Street name
+                \s+
+                (?:Street|St|Road|Rd|Avenue|Ave|Lane|Ln|Drive|Dr|Court|Ct|Place|Pl|Parade|Pde|Boulevard|Blvd|Terrace|Tce|Way|Highway|Hwy|Crescent|Cres|Circuit|Cct|Square|Sq|Close|Cl)\.?
+                \s*,?\s*
+                [A-Za-z][A-Za-z\s'-]+                                    # Suburb
+                \s+
+                (?:NSW|VIC|QLD|SA|WA|TAS|NT|ACT)                        # State
+                \s+
+                \d{4}                                                    # Postcode
+                $
+            """
+
+            # Check if address matches the pattern
+            if re.match(address_pattern, new_address, re.VERBOSE | re.IGNORECASE):
+                # Additional checks
+                parts = new_address.split()
+                if len(parts) >= 5:  # Minimum components
+                    break
+            else:
+                print(
+                    "Please enter a valid Australian address.\n"
+                    "Format: [Unit/]Number Street Name, Suburb STATE Postcode\n"
+                    "Example: 123 Smith Street, Surry Hills NSW 2000\n"
+                    "Example: Unit 5/123 Park Road, Melbourne VIC 3000"
+                )
+
+        # Email validation
+        while True:
+            new_email = input(f"Enter new email (or press Enter to keep current): ").strip().lower()
+
+            if not new_email:  # Keep existing email
+                new_email = customer.email
+                break
+
+            # Email pattern
+            email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+            if re.match(email_pattern, new_email) and len(new_email) >= 6:
+                # Additional checks
+                if new_email.count('@') == 1 and not new_email.startswith('@') and not new_email.endswith('@'):
+                    break
+
+            print(
+                "Please enter a valid email address.\n"
+                "Format: username@domain.com\n"
+                "Example: john.smith@email.com"
+            )
+
+        # Phone number validation (Australian format)
+        while True:
+            new_phone = input(f"Enter new Australian phone number (or press Enter to keep current): ").strip()
+
+            if not new_phone:  # Keep existing phone
+                new_phone = customer.phone
+                break
+
+            # Remove spaces, dashes, and parentheses for validation
+            cleaned_phone = re.sub(r'[\s\-\(\)]', '', new_phone)
+
+            # Australian phone patterns
+            mobile_pattern = r'^(?:\+?61|0)4\d{8}$'  # Mobile: 04XX XXX XXX or +614XX XXX XXX
+            landline_pattern = r'^(?:\+?61|0)[2378]\d{8}$'  # Landline: 02/03/07/08 XXXX XXXX
+
+            if re.match(mobile_pattern, cleaned_phone) or re.match(landline_pattern, cleaned_phone):
+                break
+
+            print(
+                "Please enter a valid Australian phone number.\n"
+                "Mobile format: 04XX XXX XXX or +614XX XXX XXX\n"
+                "Landline format: (0X) XXXX XXXX or +61X XXXX XXXX\n"
+                "Examples: 0412 345 678, (02) 1234 5678, +61 412 345 678"
+            )
 
         # Update customer object
-        customer.name = name
-        customer.contact = contact
-        customer.address = address
+        customer.name = new_name
+        customer.dob = new_birthday  # Store as formatted string
+        customer.address = new_address
+        customer.email = new_email
+        customer.phone = new_phone
 
         # Update in data store
         self.customer_store.update(customer_id, customer)
-        print("Customer information updated successfully.")
+
+        print("\n✓ Customer information updated successfully!")
+        print("\nUpdated information:")
+        customer.display_info()
 
     def remove_customer(self):
         """Remove a customer."""
@@ -686,6 +823,30 @@ class ShipmentMenu(Menu):
         self.add_option('3', 'View all shipments', self.view_shipments)
         self.add_option('4', 'Quit shipment management', lambda: None)  # Just for display
 
+    def validate_address(self, address_type):
+        """Validate address format for origin or destination."""
+        while True:
+            address = input(f"Please enter the {address_type} address.\n"
+                            "Please use: street and number, suburb, zipcode: ").lower()
+
+            pattern = (r'^([a-zA-Z0-9][a-zA-Z0-9\s\-]{2,}),'
+                       r'\s*([a-zA-Z][a-zA-Z\s-]{2,}),\s*([a-zA-Z0-9]{4,10})$')
+
+            match = re.match(pattern, address)
+            if match:
+                street, suburb, zipcode = match.groups()
+                print("Thank you for providing a valid format address!")
+                print(f"Street and number: {street}")
+                print(f"Suburb: {suburb}")
+                print(f"Zipcode: {zipcode}")
+                return address.title()
+            else:
+                print("Invalid address format. Please use: street and number, suburb, zipcode")
+                retry = input("Would you like to try again? (y/n): ")
+                if retry.lower() != 'y':
+                    print("Returning to Shipment Management menu...")
+                    return None
+
     def create_shipment(self):
         """Create a new shipment."""
         print("\n=== Create a New Shipment ===")
@@ -698,26 +859,132 @@ class ShipmentMenu(Menu):
             print(f"No customer found with ID: {customer_id}")
             return
 
-        # Get shipment details
-        origin = input("Enter origin: ")
-        destination = input("Enter destination: ")
-        contents = input("Enter contents: ")
-        weight = input("Enter weight: ")
+        # Show customer information
+        print(f"\nCustomer: {customer.name}")
+        print(f"Address: {customer.address}")
 
-        # Get vehicle ID (optional)
-        vehicle_id = input("Enter vehicle ID (or press Enter to assign later): ")
-        if vehicle_id:
-            vehicle = self.vehicle_store.find(vehicle_id)
-            if not vehicle:
-                print(f"Warning: No vehicle found with ID: {vehicle_id}")
-                vehicle_id = None
+        # Get shipment details
+        # Validate origin address with option to use customer address
+        print("\n=== Origin Address ===")
+        use_customer_address = input("Use customer address as origin? (y/n): ").lower()
+
+        if use_customer_address == 'y':
+            origin = customer.address
+            print(f"Using customer address: {origin}")
+        else:
+            origin = self.validate_address("origin")
+            if origin is None:  # User chose to cancel
+                return
+
+        # Validate destination address with option to use customer address
+        print("\n=== Destination Address ===")
+        if use_customer_address != 'y':  # Only ask if origin wasn't customer address
+            use_customer_address_dest = input("Use customer address as destination? (y/n): ").lower()
+
+            if use_customer_address_dest == 'y':
+                destination = customer.address
+                print(f"Using customer address: {destination}")
+            else:
+                destination = self.validate_address("destination")
+                if destination is None:  # User chose to cancel
+                    return
+        else:
+            destination = self.validate_address("destination")
+            if destination is None:  # User chose to cancel
+                return
+
+        # Weight validation
+        while True:
+            weight_input = input("Please enter the weight of the package in kg: ").strip()
+
+            if not weight_input:
+                print("Weight cannot be empty. Please enter a valid weight.")
+                retry = input("Would you like to try again? (y/n): ")
+                if retry.lower() != 'y':
+                    print("Returning to Shipment Management menu...")
+                    return
+                continue
+
+            pattern = r'^\d+(\.\d+)?$'
+            match = re.match(pattern, weight_input)
+
+            if match:
+                weight = float(weight_input)
+
+                if weight <= 0:
+                    print("Weight must be greater than zero. Please enter a positive weight.")
+                    retry = input("Would you like to try again? (y/n): ")
+                    if retry.lower() != 'y':
+                        print("Returning to Shipment Management menu...")
+                        return
+                    continue
+
+                if weight.is_integer():
+                    weight = int(weight)
+
+                print(f"The weight typed is: {weight} kg.")
+                break
+            else:
+                print("This is not a valid input. Try again.\n"
+                      "Remember that only positive numbers are allowed")
+                retry = input("Would you like to try again? (y/n): ")
+                if retry.lower() != 'y':
+                    print("Returning to Shipment Management menu...")
+                    return
+
+        # Get available vehicles that can carry the weight
+        vehicles = self.vehicle_store.find_all()
+        available_vehicles = [v for v in vehicles if v.status == "Available" and v.capacity >= weight]
+
+        if not available_vehicles:
+            print(f"No available vehicles can carry {weight} kg.")
+            print("The shipment will be created without vehicle assignment.")
+            vehicle_id = None
+        else:
+            # Display available vehicles that can handle the weight
+            while True:
+                print(f"\n=== Available Vehicles (can carry {weight} kg) ===")
+                for i, vehicle in enumerate(available_vehicles):
+                    print(f"{i + 1}.- {vehicle.id} - {vehicle.type} (Capacity: {vehicle.capacity} kg)")
+
+                choice = input("\nPlease select a vehicle (enter number, vehicle ID, or press Enter to skip): ").strip()
+
+                if not choice:
+                    print("No vehicle assigned to this shipment.")
+                    vehicle_id = None
+                    break
+
+                if choice.isdigit():
+                    choice_num = int(choice)
+                    if 1 <= choice_num <= len(available_vehicles):
+                        selected_vehicle = available_vehicles[choice_num - 1]
+                        print(f"You chose the vehicle ID: {selected_vehicle.id}")
+                        vehicle_id = selected_vehicle.id
+                        break
+                else:
+                    vehicle_found = False
+                    for vehicle in available_vehicles:
+                        if choice.upper() == vehicle.id.upper():
+                            print(f"You chose the vehicle ID: {vehicle.id}")
+                            vehicle_id = vehicle.id
+                            vehicle_found = True
+                            break
+
+                    if vehicle_found:
+                        break
+
+                print("Invalid selection. Please try again.")
+                retry = input("Would you like to try again? (y/n): ")
+                if retry.lower() != 'y':
+                    print("No vehicle assigned to this shipment.")
+                    vehicle_id = None
+                    break
 
         # Create new shipment
         shipment = Shipment(
             customer_id=customer_id,
             origin=origin,
             destination=destination,
-            contents=contents,
             weight=weight,
             vehicle_id=vehicle_id
         )
@@ -729,33 +996,204 @@ class ShipmentMenu(Menu):
         customer.shipment_ids.append(shipment_id)
         self.customer_store.update(customer_id, customer)
 
-        print(f"Shipment created successfully with ID: {shipment_id}")
+        print(f"\nShipment created successfully with ID: {shipment_id}")
+        print(f"Origin: {origin}")
+        print(f"Destination: {destination}")
+        print(f"Weight: {weight} kg")
+        if vehicle_id:
+            print(f"Assigned Vehicle: {vehicle_id}")
+        else:
+            print("No vehicle assigned")
+
+    def generate_status(self, shipment_id):
+        """Generate a status message based on shipment ID."""
+        status_messages = {
+            0: "Your shipment is being processed",
+            1: "Your shipment is in transit",
+            2: "Your shipment is out for delivery",
+            3: "Your shipment is at the destination facility"
+        }
+        status_code = sum(ord(char) for char in shipment_id) % 4
+        return status_messages[status_code]
+
+    def get_customer_name(self, customer_id):
+        """Get customer name by ID."""
+        customer = self.customer_store.find(customer_id)
+        return customer.name if customer else "Unknown"
+
+    def get_vehicle_type(self, vehicle_id):
+        """Get vehicle type by ID."""
+        if not vehicle_id:
+            return "Not assigned"
+        vehicle = self.vehicle_store.find(vehicle_id)
+        return vehicle.type if vehicle else "Not assigned"
+
+    def get_delivery_status(self, shipment):
+        """Get delivery status information for a shipment."""
+        if not shipment.delivery_id:
+            return None
+
+        delivery = self.delivery_store.find(shipment.delivery_id)
+        if not delivery:
+            return None
+
+        if delivery.status == "Delivered":
+            return {
+                "status": "Your shipment has been delivered",
+                "date_type": "Delivery Date",
+                "date": delivery.delivery_date
+            }
+        else:
+            return {
+                "status": delivery.status,
+                "date_type": "Scheduled Date",
+                "date": delivery.delivery_date
+            }
 
     def track_shipment(self):
         """Track a shipment's status."""
         print("\n=== Track a Shipment ===")
 
-        # Get shipment ID
-        shipment_id = input("Enter shipment ID: ")
-        shipment = self.shipment_store.find(shipment_id)
+        # Validation function
+        is_valid_format = lambda sid: len(sid) == 8 and sid.startswith("S")
 
-        if not shipment:
-            print(f"No shipment found with ID: {shipment_id}")
+        while True:
+            shipment_id = input("Please enter your Shipment ID (Sxxxxxxx): ").upper()
+
+            # Validate inputs
+            if not shipment_id:
+                print("Error: Empty input not allowed.")
+                continue
+
+            if not is_valid_format(shipment_id):
+                print("Error: Invalid format. Use S + 7 characters (e.g., S1234567)")
+                if input("Try again? (y/n): ").lower() != 'y':
+                    return
+                continue
+
+            # Find shipment
+            shipment = self.shipment_store.find(shipment_id)
+            if not shipment:
+                print(f"Shipment ID {shipment_id} not found.")
+                if input("Try again? (y/n): ").lower() != 'y':
+                    return
+                continue
+
+            # Display information
+            print(f"\n{'=' * 10} Shipment Tracking {'=' * 10}")
+            print(f"ID: {shipment_id}")
+            print(f"Customer: {self.get_customer_name(shipment.customer_id)}")
+            print(f"Route: {shipment.origin} → {shipment.destination}")
+            print(f"Weight: {shipment.weight} kg")
+            print(f"Vehicle: {self.get_vehicle_type(shipment.vehicle_id)}")
+
+            # Status display
+            delivery_info = self.get_delivery_status(shipment)
+            if delivery_info:
+                print(f"\nStatus: {delivery_info['status']}")
+                print(f"{delivery_info['date_type']}: {delivery_info['date']}")
+            else:
+                print(f"\nStatus: {self.generate_status(shipment_id)}")
+                if shipment.status != "Pending":
+                    print(f"Stage: {shipment.status}")
+
+            input("\nPress Enter to continue...")
             return
 
-        # Get related objects for display
-        customer = self.customer_store.find(shipment.customer_id)
-        customer_name = customer.name if customer else "Unknown"
+    def calculate_simulated_delivery_date(self, shipment):
+        """Calculate a simulated delivery date based on shipment properties."""
+        from datetime import datetime, timedelta
+        import random
 
+        # Base date (creation date or current date)
+        base_date = datetime.now()
+
+        # Determine transit days based on various factors
+        transit_days = 2  # Base transit time
+
+        # Factor 1: Weight impact
+        if shipment.weight > 100:
+            transit_days += 2
+        elif shipment.weight > 50:
+            transit_days += 1
+
+        # Factor 2: Vehicle type impact
         vehicle = self.vehicle_store.find(shipment.vehicle_id) if shipment.vehicle_id else None
-        vehicle_type = vehicle.type if vehicle else "Not assigned"
+        if vehicle:
+            vehicle_delays = {
+                'Motorcycle': -1,  # Faster for small packages
+                'Van': 0,
+                'Truck': 1,
+                'Cargo Ship': 5,
+                'Airplane': -2  # Fastest
+            }
+            transit_days += vehicle_delays.get(vehicle.type, 0)
 
-        # Display shipment info
-        print("Shipment Information:")
-        shipment.display_info(customer_name=customer_name, vehicle_type=vehicle_type)
+        # Factor 3: Random delay simulation (weather, traffic, etc.)
+        random_delay = random.randint(0, 2)
+        transit_days += random_delay
+
+        # Factor 4: Shipment ID based variation (consistent for same ID)
+        id_factor = sum(ord(char) for char in shipment.id) % 3
+        transit_days += id_factor
+
+        # Ensure minimum 1 day transit
+        transit_days = max(1, transit_days)
+
+        # Calculate delivery date, skipping weekends
+        delivery_date = base_date
+        days_added = 0
+
+        while days_added < transit_days:
+            delivery_date += timedelta(days=1)
+            # Skip weekends (5 = Saturday, 6 = Sunday)
+            if delivery_date.weekday() < 5:
+                days_added += 1
+
+        return delivery_date.strftime('%Y-%m-%d')
+
+    def get_simulated_delivery_info(self, shipment):
+        """Get simulated delivery information for display."""
+        # If there's already a delivery record, use it
+        if shipment.delivery_id:
+            return self.get_delivery_status(shipment)
+
+        # Generate simulated delivery date
+        estimated_date = self.calculate_simulated_delivery_date(shipment)
+
+        # Determine status based on current date and estimated delivery
+        from datetime import datetime
+        current_date = datetime.now().date()
+        delivery_date = datetime.strptime(estimated_date, '%Y-%m-%d').date()
+
+        if current_date > delivery_date:
+            # Past delivery date - mark as delivered
+            return {
+                "status": "Your shipment has been delivered",
+                "date_type": "Delivery Date",
+                "date": estimated_date
+            }
+        elif current_date == delivery_date:
+            return {
+                "status": "Out for delivery today",
+                "date_type": "Expected Delivery",
+                "date": estimated_date
+            }
+        else:
+            days_until = (delivery_date - current_date).days
+            if days_until == 1:
+                status = "Arriving tomorrow"
+            else:
+                status = f"In transit - arriving in {days_until} days"
+
+            return {
+                "status": status,
+                "date_type": "Estimated Delivery",
+                "date": estimated_date
+            }
 
     def view_shipments(self):
-        """Display all shipments."""
+        """Display all shipments with simulated delivery dates."""
         print("\n=== All Shipments ===")
 
         shipments = self.shipment_store.find_all()
@@ -764,15 +1202,25 @@ class ShipmentMenu(Menu):
             return
 
         for shipment in shipments:
-            # Get customer name if available
-            customer = self.customer_store.find(shipment.customer_id)
-            customer_name = customer.name if customer else "Unknown"
+            # Display shipment info with consistent formatting
+            print(f"Shipment ID: {shipment.id}")
+            print(f"Customer: {self.get_customer_name(shipment.customer_id)}")
+            print(f"Origin: {shipment.origin}")
+            print(f"Destination: {shipment.destination}")
+            print(f"Weight: {shipment.weight} kg")
+            print(f"Vehicle: {self.get_vehicle_type(shipment.vehicle_id)}")
 
-            # Get vehicle type if available
-            vehicle = self.vehicle_store.find(shipment.vehicle_id) if shipment.vehicle_id else None
-            vehicle_type = vehicle.type if vehicle else "Not assigned"
+            # Status and delivery date display
+            delivery_info = self.get_simulated_delivery_info(shipment)
+            if delivery_info:
+                print(f"Status: {delivery_info['status']}")
+                print(f"{delivery_info['date_type']}: {delivery_info['date']}")
+            else:
+                # Fallback to original status generation
+                print(f"Status: {self.generate_status(shipment.id)}")
+                if shipment.status != "Pending":
+                    print(f"Stage: {shipment.status}")
 
-            shipment.display_info(customer_name=customer_name, vehicle_type=vehicle_type)
             print("-" * 30)
 
 
@@ -794,53 +1242,79 @@ class DeliveryMenu(Menu):
         """Mark a shipment as delivered."""
         print("\n=== Mark Shipment Delivery ===")
 
-        # Get shipment ID
-        shipment_id = input("Enter shipment ID: ")
-        shipment = self.shipment_store.find(shipment_id)
+        # Validation function
+        is_valid_format = lambda sid: len(sid) == 8 and sid.startswith("S")
 
-        if not shipment:
-            print(f"No shipment found with ID: {shipment_id}")
-            return
+        while True:
+            shipment_id = input("Enter shipment ID to mark as delivered (or 'q' to quit): ").upper()
 
-        # Check if delivery already exists for this shipment
-        if shipment.delivery_id:
-            delivery = self.delivery_store.find(shipment.delivery_id)
-            if delivery:
-                print(f"This shipment already has a delivery record (ID: {delivery.id}, Status: {delivery.status})")
-                update = input("Do you want to update the delivery status? (y/n): ")
-                if update.lower() != 'y':
-                    return
-
-                # Update existing delivery
-                status = input("Enter new delivery status: ")
-                delivery_date = input("Enter delivery date: ")
-
-                delivery.status = status
-                delivery.delivery_date = delivery_date
-
-                self.delivery_store.update(delivery.id, delivery)
-                print("Delivery status updated successfully.")
+            if shipment_id.lower() == 'q':
                 return
 
-        # Create new delivery
-        delivery_date = input("Enter delivery date: ")
-        status = input("Enter delivery status (or press Enter for 'Delivered'): ") or "Delivered"
+            # Validate format
+            if not is_valid_format(shipment_id):
+                print("Error: Invalid format. Use S + 7 characters (e.g., S1234567)")
+                continue
 
-        delivery = Delivery(
-            shipment_id=shipment_id,
-            delivery_date=delivery_date,
-            status=status
-        )
+            # Find shipment
+            shipment = self.shipment_store.find(shipment_id)
+            if not shipment:
+                print(f"Error: No shipment found with ID: {shipment_id}")
+                continue
 
-        # Add to data store
-        delivery_id = self.delivery_store.add(delivery)
+            # Check if already delivered
+            if shipment.delivery_id:
+                delivery = self.delivery_store.find(shipment.delivery_id)
+                if delivery and delivery.status == "Delivered":
+                    print(f"Error: This shipment has already been delivered on {delivery.delivery_date}")
+                    continue
 
-        # Update shipment with delivery info
-        shipment.delivery_id = delivery_id
-        shipment.status = status  # Update shipment status
-        self.shipment_store.update(shipment_id, shipment)
+            # Automatically capture current date and time
+            from datetime import datetime
+            current_datetime = datetime.now()
+            delivery_date = current_datetime.strftime("%d/%m/%Y %H:%M")
+            delivery_time = current_datetime.strftime("%H:%M")
 
-        print(f"Delivery marked successfully with ID: {delivery_id}")
+            # Create or update delivery record
+            if shipment.delivery_id:
+                delivery = self.delivery_store.find(shipment.delivery_id)
+                delivery.status = "Delivered"
+                delivery.delivery_date = f"{delivery_date} {delivery_time}"
+                self.delivery_store.update(delivery.id, delivery)
+            else:
+                delivery = Delivery(
+                    shipment_id=shipment_id,
+                    delivery_date=f"{delivery_date} {delivery_time}",
+                    status="Delivered"
+                )
+                delivery_id = self.delivery_store.add(delivery)
+                shipment.delivery_id = delivery_id
+
+            # Update shipment status
+            shipment.status = "Delivered"
+            self.shipment_store.update(shipment_id, shipment)
+
+            # Display success message
+            print("\n✓ DELIVERY CONFIRMATION")
+            print("=" * 30)
+            print(f"Shipment ID: {shipment_id}")
+            print(f"Date: {delivery_date}")
+            print(f"Time: {delivery_time}")
+            print(f"Status: DELIVERED")
+
+            # Get additional info
+            customer = self.customer_store.find(shipment.customer_id)
+            if customer:
+                print(f"Customer: {customer.name}")
+                print(f"Address: {shipment.destination}")
+
+            print("=" * 30)
+            print("Delivery recorded successfully!")
+
+            # Ask if want to mark another delivery
+            another = input("\nMark another delivery? (y/n): ")
+            if another.lower() != 'y':
+                break
 
     def view_delivery_status(self):
         """View the delivery status of a shipment."""
