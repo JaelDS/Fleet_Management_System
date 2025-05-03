@@ -14,6 +14,36 @@ import string
 import datetime
 import re
 
+from IPython.core.release import author
+from colorama import Fore, Style, init
+
+# Initialize colorama
+init()
+
+def display_signature():
+    # Define colors
+    border = Fore.CYAN
+    code = Fore.MAGENTA
+    crafted = Fore.BLUE
+    with_text = Fore.GREEN
+    heart = Fore.RED
+    by = Fore.YELLOW
+    name = Fore.WHITE
+    reset = Style.RESET_ALL
+
+    # Text with both names
+    content = f"   {code}Code{reset} {crafted}crafted{reset} {with_text}with{reset} {heart}♥{reset} {by}by{reset} {name}Jael & Patrick{reset}   "
+    content_length = len("   Code crafted with ♥ by Jael & Patrick   ")
+
+    # Create a double-line border that's proportional to the content
+    top_border = f"{border}╔{'═' * (content_length + 2)}╗{reset}"
+    side_border = f"{border}║{reset}"
+    bottom_border = f"{border}╚{'═' * (content_length + 2)}╝{reset}"
+
+    # Print the signature with proper spacing
+    print("\n" + top_border)
+    print(f"{side_border} {content} {side_border}")
+    print(bottom_border + "\n")
 
 class DataStore:
     """Base class for data storage
@@ -136,6 +166,9 @@ class Menu:
 
 
 # Base data classes
+'''
+** @author Jael **
+'''
 class Vehicle:
     """Class representing a vehicle in the fleet.
 
@@ -147,33 +180,43 @@ class Vehicle:
         self.type = type
         self.capacity = capacity
         self.status = status
+        self.date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def display_info(self):
         """Display vehicle information."""
-        print(f"Vehicle ID: {self.id}")
-        print(f"Type: {self.type}")
-        print(f"Capacity: {self.capacity}")
-        print(f"Status: {self.status}")
-
+        print(f"Vehicle ID: {self.id}\n"
+              f"Type: {self.type}\n"
+              f"Capacity: {self.capacity}\n"
+              f"Status: {self.status}\n"
+              f"Date: {self.date}")
 
 class Customer:
     """Class representing a customer."""
 
-    def __init__(self, customer_id=None, name=None, contact=None, address=None):
+    def __init__(self, customer_id=None, name=None, birthday=None,
+                 address=None, email=None, phone=None):
         self.id = customer_id  # This will be set by the DataStore when added
         self.name = name
-        self.contact = contact
+        self.dob = birthday
         self.address = address
+        self.email = email
+        self.phone = phone
+
         self.shipment_ids = []  # Store IDs of shipments instead of objects
 
     def display_info(self):
         """Display customer information."""
-        print(f"Customer ID: {self.id}")
-        print(f"Name: {self.name}")
-        print(f"Contact: {self.contact}")
-        print(f"Address: {self.address}")
+        print(f"Customer ID: {self.id}\n"
+              f"Name: {self.name}\n"
+              f"Birthday: {self.dob}\n"
+              f"Address: {self.address}\n"
+              f"Email: {self.email}\n"
+              f"Phone: {self.phone}\n")
 
 
+'''
+** @author Jael **
+'''
 class Shipment:
     """Class representing a shipment."""
 
@@ -219,7 +262,9 @@ class Delivery:
         print(f"Delivery Date: {self.delivery_date}")
         print(f"Status: {self.status}")
 
-
+'''
+** @author Jael **
+'''
 # Manager classes with menu inheritance
 class FleetMenu(Menu):
     """Fleet Management Menu derived from base Menu
@@ -256,17 +301,26 @@ class FleetMenu(Menu):
                     "Error: The vehicle type must contain only "
                     "letters or spaces and be at least 3 characters long.")
 
-        # Validate capacity (similar pattern)
+        # Validate capacity
         while True:
-            capacity = input("Enter vehicle capacity: ")
-            # Simple check that it's not empty and is a digit
-            if (capacity.strip() and re.match(r'^\S*\d+(\.\d+)?$', capacity)):
-                if int(capacity) > 0 or float(capacity) > 0:
-                    break
-                else:
-                    print("Error: The input should be greater than 0.")
-            else:
-                print("Error: Capacity cannot be empty or should be a number.")
+            user_input = input("Enter vehicle capacity: ")
+            try:
+                # First try to convert to float
+                capacity = float(user_input)
+
+                # Check if the value is positive
+                if capacity <= 0:
+                    print("Please validate your input, no zero values are allowed.")
+                    continue
+
+                # If it's actually an integer, convert it
+                if capacity.is_integer():
+                    capacity = int(capacity)
+
+                break  # Valid input, exit the loop
+
+            except ValueError:
+                print("Please validate your input. Only numbers are allowed.")
         status = self.__status
 
         # Create new vehicle object
@@ -275,6 +329,7 @@ class FleetMenu(Menu):
         # Add to data store
         vehicle_id = self.vehicle_store.add(vehicle)
         print(f"Vehicle added successfully with ID: {vehicle_id}")
+        print("\033[92m Code by Jael\033[00m")
 
     def update_vehicle(self):
         """Update an existing vehicle's information."""
@@ -302,16 +357,23 @@ class FleetMenu(Menu):
                 print(
                     "Error: The vehicle type must contain only "
                     "letters or spaces and be at least 3 characters long.")
+
+        # Validate capacity
         while True:
-            capacity = input(f"Enter new capacity (or press Enter to keep '{vehicle.capacity}'): ") or vehicle.capacity
-            # Simple check that it's not empty and is a digit
-            if (capacity.strip() and re.match(r'^\S*\d+(\.\d+)?$', capacity)):
-                if int(capacity) > 0 or float(capacity) > 0:
-                    break
-                else:
-                    print("Error: The input should be greater than 0.")
-            else:
-                print("Error: Capacity cannot be empty or should be a number.")
+            user_input = input("Enter vehicle capacity: ")
+            try:
+                # First try to convert to float
+                capacity = float(user_input)
+                # Check if the value is positive
+                if capacity <= 0:
+                    print("Please validate your input, no zero values are allowed.")
+                    continue
+                # If it's actually an integer, convert it
+                if capacity.is_integer():
+                    capacity = int(capacity)
+                break  # Valid input, exit the loo
+            except ValueError:
+                print("Please validate your input. Only numbers are allowed.")
         status = input(f"Enter new status (or press Enter to keep '{vehicle.status}'): ") or vehicle.status
 
         # Update vehicle object
@@ -322,6 +384,7 @@ class FleetMenu(Menu):
         # Update in data store
         self.vehicle_store.update(vehicle_id, vehicle)
         print("Vehicle information updated successfully.")
+        print("\033[92m Code by Jael\033[00m")
 
     def remove_vehicle(self):
         """Remove a vehicle from the fleet."""
@@ -339,11 +402,13 @@ class FleetMenu(Menu):
         print("Vehicle to be removed:")
         vehicle.display_info()
 
+
         # Confirm removal
         confirm = input("Are you sure you want to remove this vehicle? (y/n): ")
         if confirm.lower() == 'y':
             self.vehicle_store.remove(vehicle_id)
             print("Vehicle removed successfully.")
+            print("\033[92m Code by Jael\033[00m")
         else:
             print("Removal cancelled.")
 
@@ -359,6 +424,7 @@ class FleetMenu(Menu):
         for vehicle in vehicles:
             vehicle.display_info()
             print("-" * 30)
+            print("\033[92m Code by Jael\033[00m")
 
 
 class CustomerMenu(Menu):
@@ -382,12 +448,122 @@ class CustomerMenu(Menu):
         print("\n=== Add a New Customer ===")
 
         # Get customer details from user
-        name = input("Enter customer name: ")
-        contact = input("Enter customer contact information: ")
-        address = input("Enter customer address: ")
+
+        while True:
+            name = input("Enter customer name (first and last name): ").title()
+            # Check if name has at least two words
+            words = name.title().split()
+            if (re.match(r'^[a-zA-Z][a-zA-Z\s]*$', name)
+                    and len(words) >= 2
+                    and len(name) >= 6):
+                break
+            else:
+                print(
+                    "The customer name must contain at least two words "
+                    "(first and last name), only letters or spaces, "
+                    "and be at least 6 characters long.")
+
+        while True:
+            date_str = input("Enter birthday (yyyy-mm-dd): ")
+            try:
+                d = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+                today = datetime.datetime.now()
+
+                # Check if date is in the future
+                if d > today:
+                    print("Birthday cannot be in the future!")
+                    continue
+
+                # Check if age is reasonable (not over 120 years)
+                age = today.year - d.year - ((today.month, today.day) < (d.month, d.day))
+                if age > 120:
+                    print("Please enter a valid birthday (age cannot exceed 120 years).")
+                    continue
+
+                if age < 18:
+                    print("You are under 18 years. You need to be over 18 years to use the program.")
+                    continue
+
+                break
+            except ValueError:
+                print("Invalid date format! Please use yyyy/mm/dd format.")
+
+        while True:
+            address = input("Enter Australian address: ").title().strip()
+
+            # Define the address pattern
+            address_pattern = r"""
+                ^
+                (?:(?:Unit|Apt|Apartment|Flat)\s*\d+[a-zA-Z]?[/\-\s]+)?  # Optional unit
+                \d+[a-zA-Z]?(?:\s*-\s*\d+[a-zA-Z]?)?                     # Street number
+                \s+
+                (?:[A-Za-z][A-Za-z']+(?:\s+[A-Za-z][A-Za-z']+)*)         # Street name
+                \s+
+                (?:Street|St|Road|Rd|Avenue|Ave|Lane|Ln|Drive|Dr|Court|Ct|Place|Pl|Parade|Pde|Boulevard|Blvd|Terrace|Tce|Way|Highway|Hwy|Crescent|Cres|Circuit|Cct|Square|Sq|Close|Cl)\.?
+                \s*,?\s*
+                [A-Za-z][A-Za-z\s'-]+                                    # Suburb
+                \s+
+                (?:NSW|VIC|QLD|SA|WA|TAS|NT|ACT)                        # State
+                \s+
+                \d{4}                                                    # Postcode
+                $
+            """
+
+            # Check if address matches the pattern
+            if re.match(address_pattern, address, re.VERBOSE | re.IGNORECASE):
+                # Additional checks
+                parts = address.split()
+                if len(parts) >= 5:  # Minimum components
+                    break
+            else:
+                print(
+                    "Please enter a valid Australian address.\n"
+                    "Format: [Unit/]Number Street Name, Suburb STATE Postcode\n"
+                    "Example: 123 Smith Street, Surry Hills NSW 2000\n"
+                    "Example: Unit 5/123 Park Road, Melbourne VIC 3000"
+                )
+
+        # Email validation
+        while True:
+            email = input("Enter email address: ").strip().lower()
+
+            # Email pattern
+            email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+            if re.match(email_pattern, email) and len(email) >= 6:
+                # Additional checks
+                if email.count('@') == 1 and not email.startswith('@') and not email.endswith('@'):
+                    break
+
+            print(
+                "Please enter a valid email address.\n"
+                "Format: username@domain.com\n"
+                "Example: john.smith@email.com"
+            )
+
+        # Phone number validation (Australian format)
+        while True:
+            phone = input("Enter Australian phone number: ").strip()
+
+            # Remove spaces, dashes, and parentheses for validation
+            cleaned_phone = re.sub(r'[\s\-\(\)]', '', phone)
+
+            # Australian phone patterns
+            mobile_pattern = r'^(?:\+?61|0)4\d{8}$'  # Mobile: 04XX XXX XXX or +614XX XXX XXX
+            landline_pattern = r'^(?:\+?61|0)[2378]\d{8}$'  # Landline: 02/03/07/08 XXXX XXXX
+
+            if re.match(mobile_pattern, cleaned_phone) or re.match(landline_pattern, cleaned_phone):
+                break
+
+            print(
+                "Please enter a valid Australian phone number.\n"
+                "Mobile format: 04XX XXX XXX or +614XX XXX XXX\n"
+                "Landline format: (0X) XXXX XXXX or +61X XXXX XXXX\n"
+                "Examples: 0412 345 678, (02) 1234 5678, +61 412 345 678"
+            )
 
         # Create new customer object
-        customer = Customer(name=name, contact=contact, address=address)
+        customer = Customer(name=name, birthday=d, address=address, email=email, phone=phone)
 
         # Add to data store
         customer_id = self.customer_store.add(customer)
@@ -492,7 +668,9 @@ class CustomerMenu(Menu):
             else:
                 print(f"Warning: Shipment ID {shipment_id} not found.")
 
-
+'''
+** @author Jael **
+'''
 class ShipmentMenu(Menu):
     """Shipment Management Menu derived from base Menu"""
 
@@ -736,6 +914,7 @@ def main():
     menu = MainMenu()
     menu.execute()
     print("Thank you for using the Logistics Management System. Goodbye!")
+    display_signature()
 
 
 if __name__ == "__main__":
