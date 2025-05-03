@@ -599,7 +599,7 @@ class CustomerMenu(Menu):
         
                
   
-        # Get updated details from user
+        # Get updated details from user name
         while True:
             name = input(f"Enter new name (or press Enter to keep '{name.type}'): ").title() or name.type
             # Check if name has at least two words
@@ -614,7 +614,7 @@ class CustomerMenu(Menu):
                     "(first and last name), only letters or spaces, "
                     "and be at least 6 characters long.")
 
-
+        # Get updated details from Address
         while True:
             address = input("Enter new Australian address (or press Enter to keep '{address.type}':").title() or address.type
 
@@ -674,7 +674,7 @@ class CustomerMenu(Menu):
 
         # New Email validation
         while True:
-            email = input("Enter email address: ").strip().lower()
+            email = input("Enter new email address: ").strip().lower()
 
             # Email pattern
             email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
@@ -689,7 +689,8 @@ class CustomerMenu(Menu):
                 "Format: username@domain.com\n"
                 "Example: john.smith@email.com"
             )
-            
+
+        # New Birthday validation
         while True:
             date_str = input("Enter new birthday (yyyy-mm-dd): ")
             try:
