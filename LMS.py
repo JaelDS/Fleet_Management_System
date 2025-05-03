@@ -202,7 +202,6 @@ class Customer:
         self.address = address
         self.email = email
         self.phone = phone
-
         self.shipment_ids = []  # Store IDs of shipments instead of objects
 
     def display_info(self):
@@ -359,7 +358,7 @@ class FleetMenu(Menu):
 
         # Validate capacity
         while True:
-            user_input = input("Enter vehicle capacity: ")
+            user_input = input(f"Enter new capacity (or press Enter to keep '{vehicle.capacity}'): ") or str(vehicle.capacity)
             try:
                 # First try to convert to float
                 capacity = float(user_input)
@@ -370,7 +369,7 @@ class FleetMenu(Menu):
                 # If it's actually an integer, convert it
                 if capacity.is_integer():
                     capacity = int(capacity)
-                break  # Valid input, exit the loo
+                break  # Valid input, exit the loop
             except ValueError:
                 print("Please validate your input. Only numbers are allowed.")
         status = input(f"Enter new status (or press Enter to keep '{vehicle.status}'): ") or vehicle.status
@@ -423,7 +422,7 @@ class FleetMenu(Menu):
         for vehicle in vehicles:
             vehicle.display_info()
             print("-" * 30)
-            print("\033[92m Code by Jael\033[00m")
+        print("\033[92m Code by Jael\033[00m")
 
 
 class CustomerMenu(Menu):
@@ -561,7 +560,8 @@ class CustomerMenu(Menu):
             )
 
         # Create new customer object - Format the date as string
-        customer = Customer(name=name, birthday=d.strftime('%d-%m-%Y'), address=address, email=email, phone=phone)
+        customer = Customer(name=name, birthday=d.strftime('%d-%m-%Y'),
+                            address=address, email=email, phone=phone)
 
         # Add to data store
         customer_id = self.customer_store.add(customer)
@@ -812,11 +812,12 @@ class CustomerMenu(Menu):
 class ShipmentMenu(Menu):
     """Shipment Management Menu derived from base Menu"""
 
-    def __init__(self, shipment_store, customer_store, vehicle_store):
+    def __init__(self, shipment_store, customer_store, vehicle_store, delivery_store):
         super().__init__("Shipment Management")
         self.shipment_store = shipment_store  # Reference to shipment data store
         self.customer_store = customer_store  # Reference to customer data store
         self.vehicle_store = vehicle_store  # Reference to vehicle data store
+        self.delivery_store = delivery_store  # Reference to delivery data store
 
         # Add menu options
         self.add_option('1', 'Create a new shipment', self.create_shipment)
@@ -906,7 +907,7 @@ class ShipmentMenu(Menu):
                     return
                 continue
 
-            pattern = r'^\d+(\.\d+)?$'
+            pattern = r'^\d+(\.\d+)?'
             match = re.match(pattern, weight_input)
 
             if match:
@@ -1103,11 +1104,11 @@ class ShipmentMenu(Menu):
 
     def calculate_simulated_delivery_date(self, shipment):
         """Calculate a simulated delivery date based on shipment properties."""
-        from datetime import datetime, timedelta
+        from datetime import timedelta
         import random
 
         # Base date (creation date or current date)
-        base_date = datetime.now()
+        base_date = datetime.datetime.now()
 
         # Determine transit days based on various factors
         transit_days = 2  # Base transit time
@@ -1163,9 +1164,8 @@ class ShipmentMenu(Menu):
         estimated_date = self.calculate_simulated_delivery_date(shipment)
 
         # Determine status based on current date and estimated delivery
-        from datetime import datetime
-        current_date = datetime.now().date()
-        delivery_date = datetime.strptime(estimated_date, '%Y-%m-%d').date()
+        current_date = datetime.datetime.now().date()
+        delivery_date = datetime.datetime.strptime(estimated_date, '%Y-%m-%d').date()
 
         if current_date > delivery_date:
             # Past delivery date - mark as delivered
@@ -1271,21 +1271,19 @@ class DeliveryMenu(Menu):
                     continue
 
             # Automatically capture current date and time
-            from datetime import datetime
-            current_datetime = datetime.now()
+            current_datetime = datetime.datetime.now()
             delivery_date = current_datetime.strftime("%d/%m/%Y %H:%M")
-            delivery_time = current_datetime.strftime("%H:%M")
 
             # Create or update delivery record
             if shipment.delivery_id:
                 delivery = self.delivery_store.find(shipment.delivery_id)
                 delivery.status = "Delivered"
-                delivery.delivery_date = f"{delivery_date} {delivery_time}"
+                delivery.delivery_date = delivery_date
                 self.delivery_store.update(delivery.id, delivery)
             else:
                 delivery = Delivery(
                     shipment_id=shipment_id,
-                    delivery_date=f"{delivery_date} {delivery_time}",
+                    delivery_date=delivery_date,
                     status="Delivered"
                 )
                 delivery_id = self.delivery_store.add(delivery)
@@ -1300,7 +1298,6 @@ class DeliveryMenu(Menu):
             print("=" * 30)
             print(f"Shipment ID: {shipment_id}")
             print(f"Date: {delivery_date}")
-            print(f"Time: {delivery_time}")
             print(f"Status: DELIVERED")
 
             # Get additional info
@@ -1369,8 +1366,10 @@ class MainMenu(Menu):
         # Initialize submenu instances with data stores
         self.fleet_menu = FleetMenu(self.vehicle_store)
         self.customer_menu = CustomerMenu(self.customer_store, self.shipment_store)
-        self.shipment_menu = ShipmentMenu(self.shipment_store, self.customer_store, self.vehicle_store)
-        self.delivery_menu = DeliveryMenu(self.delivery_store, self.shipment_store, self.customer_store)
+        self.shipment_menu = ShipmentMenu(self.shipment_store, self.customer_store,
+                                          self.vehicle_store, self.delivery_store)
+        self.delivery_menu = DeliveryMenu(self.delivery_store, self.shipment_store,
+                                          self.customer_store)
 
         # Add menu options
         self.add_option('1', 'Fleet Management', self.fleet_menu.execute)
