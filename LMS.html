@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Management System - OOP Principles Implementation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --code-bg: #2d3748;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 4rem;
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9f3ff 100%);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+
+        .course-info {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-badge {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: var(--primary);
+            opacity: 0.2;
+        }
+
+        /* Design Decision Cards */
+        .design-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid var(--primary);
+        }
+
+        .design-card h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .design-card-icon {
+            color: var(--primary);
+        }
+
+        .rationale {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .rationale-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Code Examples */
+        .code-example {
+            background: var(--code-bg);
+            border-radius: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: #1a202c;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-title {
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .code-language {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem !important;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.9rem !important;
+            line-height: 1.6 !important;
+        }
+
+        /* OOP Principles Grid */
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .principle-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .principle-card h4 {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .implementation-note {
+            background: #fef3c7;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .implementation-note-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Diagram Styles */
+        .architecture-diagram {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .diagram-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .class-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin: 2rem 0;
+        }
+
+        .class-box {
+            background: var(--light);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 200px;
+        }
+
+        .class-name {
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 1px solid var(--primary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .class-attributes {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .inheritance-arrow {
+            width: 50px;
+            height: 2px;
+            background: var(--primary);
+            position: relative;
+            margin: 0 1rem;
+            align-self: center;
+        }
+
+        .inheritance-arrow::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: -5px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid var(--primary);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        /* Key Insights */
+        .insight-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #065f46;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Implementation Highlights */
+        .highlight-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .highlight-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .highlight-item {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .highlight-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .highlight-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .creators {
+            margin-top: 1rem;
+            color: #94a3b8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .class-diagram {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .inheritance-arrow {
+                transform: rotate(90deg);
+                margin: 2rem 0;
+            }
+
+            .highlight-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                LMS Case Study
+            </div>
+            <ul class="nav-links">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#oop-principles">OOP Principles</a></li>
+                <li><a href="#design-patterns">Design Patterns</a></li>
+                <li><a href="#implementation">Implementation</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="overview">
+        <div class="container">
+            <h1>Logistics Management System</h1>
+            <p class="hero-subtitle">A comprehensive case study in Object-Oriented Programming principles, design patterns, and practical implementation decisions for a real-world logistics application.</p>
+            
+            <div class="course-info">
+                <div class="info-badge">
+                    <i class="fas fa-book"></i>
+                    Principles of Programming
+                </div>
+                <div class="info-badge">
+                    <i class="fas fa-code"></i>
+                    Python Implementation
+                </div>
+                <div class="info-badge">
+                    <i class="fas fa-users"></i>
+                    Developed by Jael & Patrick
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Overview -->
+    <section id="architecture">
+        <div class="container">
+            <h2 class="section-title">System Architecture</h2>
+            
+            <div class="design-card">
+                <h3><i class="fas fa-database design-card-icon"></i> DataStore Design Pattern</h3>
+                <p>The DataStore class serves as a centralized data management pattern, implementing a dictionary-based storage mechanism for O(1) lookup performance.</p>
+                
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="code-title">DataStore Implementation</span>
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code class="language-python">class DataStore:
+    """Base class for data storage
+    
+    This class provides a foundation for storing, retrieving, and managing data
+    using dictionaries. It offers methods to add, update, remove, and find items.
+    """
+    
+    def __init__(self):
+        self.data = {}  # Dictionary for O(1) operations
+        self.__last_id = 0  # Private attribute (not used for random IDs)
+    
+    def add(self, item):
+        """Add an item with auto-generated ID"""
+        # Polymorphic type detection
+        if isinstance(item, Vehicle):
+            prefix = "V"
+        elif isinstance(item, Customer):
+            prefix = "C"
+        elif isinstance(item, Shipment):
+            prefix = "S"
+        elif isinstance(item, Delivery):
+            prefix = "D"
+        else:
+            prefix = "I"
+        
+        # Generate random alphanumeric ID
+        alphabet = string.ascii_uppercase + string.digits
+        random_part = ''.join(random.choices(alphabet, k=7))
+        item_id = f"{prefix}{random_part}"
+        
+        # Store with unique identifier
+        item.id = item_id
+        self.data[item_id] = item
+        return item_id</code></pre>
+                </div>
+
+                <div class="rationale">
+                    <div class="rationale-title">Design Rationale:</div>
+                    <ul>
+                        <li><strong>Dictionary vs List:</strong> Chose dictionary for O(1) lookup complexity instead of O(n) list traversal</li>
+                        <li><strong>Type-Prefixed IDs:</strong> Enables instant object type identification (V for Vehicle, C for Customer)</li>
+                        <li><strong>Random ID Generation:</strong> Prevents predictable sequences and enhances security</li>
+                        <li><strong>Centralized Storage:</strong> Simplifies data management and maintains single source of truth</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="architecture-diagram">
+                <h3 class="diagram-title">Inheritance Hierarchy</h3>
+                <div class="class-diagram">
+                    <div class="class-box">
+                        <div class="class-name">Menu (Base)</div>
+                        <div class="class-attributes">
+                            + title: str<br>
+                            + options: list<br>
+                            + execute(): void
+                        </div>
+                    </div>
+                    <div class="inheritance-arrow"></div>
+                    <div class="class-box">
+                        <div class="class-name">FleetMenu</div>
+                        <div class="class-attributes">
+                            + vehicle_store: DataStore<br>
+                            + add_vehicle(): void<br>
+                            + update_vehicle(): void
+                        </div>
+                    </div>
+                </div>
+                <p style="text-align: center; color: var(--gray); margin-top: 1rem;">
+                    Similar inheritance pattern applies to CustomerMenu, ShipmentMenu, and DeliveryMenu
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- OOP Principles -->
+    <section id="oop-principles">
+        <div class="container">
+            <h2 class="section-title">OOP Principles Applied</h2>
+            
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <h4>1. Encapsulation</h4>
+                    <p>Data and methods are bundled within classes, with controlled access through public methods.</p>
+                    
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Private Attributes Example</span>
+                            <span class="code-language">Python</span>
+                        </div>
+                        <pre><code class="language-python">class FleetMenu(Menu):
+    def __init__(self, vehicle_store):
+        super().__init__("Fleet Management")
+        self.vehicle_store = vehicle_store
+        self.__status = "Available"  # Private attribute</code></pre>
+                    </div>
+                    
+                    <div class="insight-box">
+                        <div class="insight-title">Key Insight:</div>
+                        <p>The __status attribute demonstrates proper encapsulation by hiding internal state and providing controlled access.</p>
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <h4>2. Inheritance</h4>
+                    <p>Menu hierarchy demonstrates inheritance with base Menu class and specialized subclasses.</p>
+                    
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Inheritance Implementation</span>
+                            <span class="code-language">Python</span>
+                        </div>
+                        <pre><code class="language-python">class CustomerMenu(Menu):
+    def __init__(self, customer_store, shipment_store):
+        super().__init__("Customer Management")
+        self.customer_store = customer_store
+        self.shipment_store = shipment_store
+        
+        # Inherited method usage
+        self.add_option('1', 'Add a customer', self.add_customer)</code></pre>
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <h4>3. Polymorphism</h4>
+                    <p>Common interface across different object types through the execute() method.</p>
+                    
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Polymorphic Method</span>
+                            <span class="code-language">Python</span>
+                        </div>
+                        <pre><code class="language-python">def execute(self):
+    """Execute the menu and handle user input"""
+    while True:
+        self.display()
+        choice = input("Select option: ")
+        
+        # Polymorphic behavior - same method, different implementations
+        if selected:
+            selected['function']()</code></pre>
+                    </div>
+                    
+                    <div class="insight-box">
+                        <div class="insight-title">Key Insight:</div>
+                        <p>The execute() method provides a consistent interface across all menu types, enabling uniform behavior despite different implementations.</p>
+                    </div>
+                </div>
+
+                <div class="principle-card">
+                    <h4>4. Abstraction</h4>
+                    <p>Complex operations hidden behind simple interfaces.</p>
+                    
+                    <div class="code-example">
+                        <div class="code-header">
+                            <span class="code-title">Abstraction Example</span>
+                            <span class="code-language">Python</span>
+                        </div>
+                        <pre><code class="language-python"># High-level interface hides complex validation
+vehicle_id = self.vehicle_store.add(vehicle)
+
+# User doesn't need to know about:
+# - ID generation algorithm
+# - Storage mechanism
+# - Type detection logic</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementation Highlights -->
+    <section id="implementation">
+        <div class="container">
+            <h2 class="section-title">Implementation Highlights</h2>
+            
+            <div class="design-card">
+                <h3><i class="fas fa-map-marker-alt design-card-icon"></i> Australian Address Validation</h3>
+                <p>Complex regex patterns ensure compliance with Australian address formats, including state codes and postcodes.</p>
+                
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="code-title">Address Validation Pattern</span>
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code class="language-python"># Comprehensive Australian address validation
+address_pattern = r'^[a-zA-Z0-9\s,./()-]+,\s*(NSW|VIC|QLD|WA|SA|TAS|ACT|NT)\s+\d{4}$'
+
+# Validates formats like:
+# "123 Main Street, Suburb, NSW 2000"
+# "Unit 4/56 Park Avenue, Brisbane, QLD 4000"</code></pre>
+                </div>
+
+                <div class="implementation-note">
+                    <div class="implementation-note-title">Implementation Decision:</div>
+                    <p>Regex validation chosen over simple string checks to ensure data integrity and compliance with Australian postal standards.</p>
+                </div>
+            </div>
+
+            <div class="design-card">
+                <h3><i class="fas fa-sync-alt design-card-icon"></i> Customer Address Reusability</h3>
+                <p>The system leverages customer addresses for shipments, reducing data redundancy and improving consistency.</p>
+                
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="code-title">Address Reuse Implementation</span>
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code class="language-python">def create_shipment(self):
+    # Retrieve customer
+    customer = self.customer_store.find(customer_id)
+    
+    # Offer to use customer's address
+    use_customer_address = input("Use customer's address? (y/n): ")
+    
+    if use_customer_address.lower() == 'y':
+        destination = customer.address  # Reuse existing data
+    else:
+        destination = input("Enter destination: ")</code></pre>
+                </div>
+
+                <div class="rationale">
+                    <div class="rationale-title">Design Benefits:</div>
+                    <ul>
+                        <li>Reduces data entry errors</li>
+                        <li>Maintains data consistency</li>
+                        <li>Improves user experience</li>
+                        <li>Follows DRY (Don't Repeat Yourself) principle</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="design-card">
+                <h3><i class="fas fa-random design-card-icon"></i> Random ID Generation Strategy</h3>
+                <p>Implementation of a secure, collision-resistant ID generation system.</p>
+                
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="code-title">ID Generation Algorithm</span>
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code class="language-python"># Generate random alphanumeric part
+alphabet = string.ascii_uppercase + string.digits
+random_part = ''.join(random.choices(alphabet, k=7))
+
+# Create full ID with type prefix
+item_id = f"{prefix}{random_part}"  # e.g., "V7A9X2M3"</code></pre>
+                </div>
+
+                <div class="insight-box">
+                    <div class="insight-title">Security Consideration:</div>
+                    <p>Random IDs prevent sequential guessing attacks and make the system more secure compared to incremental IDs.</p>
+                </div>
+            </div>
+
+            <div class="highlight-section">
+                <h3>Performance & Design Metrics</h3>
+                <div class="highlight-grid">
+                    <div class="highlight-item">
+                        <div class="highlight-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        <div class="highlight-value">O(1)</div>
+                        <div class="highlight-label">Lookup Complexity</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="highlight-icon"><i class="fas fa-fingerprint"></i></div>
+                        <div class="highlight-value">8 chars</div>
+                        <div class="highlight-label">ID Length</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="highlight-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="highlight-value">Type-Safe</div>
+                        <div class="highlight-label">ID System</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Patterns Section -->
+    <section id="design-patterns">
+        <div class="container">
+            <h2 class="section-title">Design Patterns</h2>
+            
+            <div class="design-card">
+                <h3><i class="fas fa-project-diagram design-card-icon"></i> Repository Pattern</h3>
+                <p>The DataStore class implements the Repository pattern, providing a collection-like interface for accessing domain objects.</p>
+                
+                <div class="implementation-note">
+                    <div class="implementation-note-title">Pattern Benefits:</div>
+                    <ul>
+                        <li>Centralizes data access logic</li>
+                        <li>Provides abstraction over data storage</li>
+                        <li>Enables easy switching of storage mechanisms</li>
+                        <li>Supports unit testing through dependency injection</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="design-card">
+                <h3><i class="fas fa-layer-group design-card-icon"></i> Template Method Pattern</h3>
+                <p>The Menu base class uses the Template Method pattern with the execute() method.</p>
+                
+                <div class="code-example">
+                    <div class="code-header">
+                        <span class="code-title">Template Method Implementation</span>
+                        <span class="code-language">Python</span>
+                    </div>
+                    <pre><code class="language-python">class Menu:
+    def execute(self):
+        """Template method defining the algorithm structure"""
+        while True:
+            self.display()  # Step 1: Display options
+            choice = input("Select option: ")  # Step 2: Get input
+            
+            if choice in self.quit_options:  # Step 3: Check quit
+                break
+                
+            # Step 4: Execute selected function
+            if selected:
+                selected['function']()</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3>Logistics Management System</h3>
+            <p>A comprehensive demonstration of OOP principles and design patterns</p>
+            <p class="creators">Code crafted with ♥ by Jael & Patrick</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+</body>
+</html>
