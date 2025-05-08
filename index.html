@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Management System - Assessment #3 Presentation</title>
+
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+
+    <!-- Security: Prevent MIME type sniffing attacks -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+
+    <!-- Security: Prevent clickjacking -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+
+    <!-- Security: Enable XSS protection in older browsers -->
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+    <!-- External CSS Libraries with Subresource Integrity -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" integrity="sha512-vswe+cgvic/XBoF1OcM/TeJ2FW0OofqAVdCZiEYkd6dwGXthvkSFWOoGGJgS2CW70VK5dQM5Oh+7ne47s74VTg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Navigation -->
+<nav>
+    <div class="container">
+        <div class="logo"><img src="img_python/TORRENS_UNIVERSITY_AUSTRALIA_PRIMARY_LOGO_ORANGE_GREY_RGB.png" height="60" alt="Torrens University"/></div>
+        <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links">
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#background">Background</a></li>
+            <li><a href="#communication">Communication</a></li>
+            <li><a href="#implementation">Implementation</a></li>
+            <li><a href="#reflection">Reflection</a></li>
+            <li><a href="#references">References</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="overview">
+    <div class="container">
+        <h1>Logistics Management System</h1>
+        <p class="hero-subtitle">Object-Oriented Programming Solutions for Real-World Logistics</p>
+
+        <div class="team-grid">
+            <div class="team-member">
+                <h3>Jose Antonio Escalante Lopez</h3>
+                <p><strong>@jaelDS</strong></p>
+                <p>Fleet Management & Shipment Management</p>
+            </div>
+            <div class="team-member">
+                <h3>Michael Gomez Paucar</h3>
+                <p><strong>@PatrickGP23</strong></p>
+                <p>Menu System & Integration</p>
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-top: 3rem; text-align: left;">
+            <h3>Project Overview</h3>
+            <p><strong>Purpose:</strong> Develop a comprehensive logistics management system using OOP principles to streamline fleet operations, customer management, and delivery tracking.</p>
+            <p><strong>Problem Addressed:</strong> Manual tracking inefficiencies, data inconsistency, and lack of scalable architecture in traditional logistics operations.</p>
+            <p><strong>Key Requirements:</strong> Australian address compliance, O(1) data retrieval performance, modular architecture, and secure unique identifiers.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Background Research Section -->
+<section id="background">
+    <div class="container">
+        <h2 class="section-title">Background Research</h2>
+
+        <div class="content-card">
+            <h3>Research Foundation</h3>
+            <p>Our team conducted extensive research on software design principles to ensure robust implementation. Design patterns provide standardized, reusable solutions to recurring problems in software design, as discussed by Gamma et al. <a href="#citation-1" class="citation-ref">[1]</a>.</p>
+
+            <div class="reference-card">
+                <h4>Design Patterns</h4>
+                <p>Design patterns define solutions to "repeatedly presenting issue during software designing" <a href="#citation-1" class="citation-ref">[1]</a> and help communicate architectural knowledge between developers. These patterns also help "designers avoid traps and pitfalls that have traditionally been learned only by costly experiences" <a href="#citation-1" class="citation-ref">[1]</a>.</p>
+                <a href="https://ieeexplore.ieee.org/document/5982228" target="_blank">View IEEE Source</a>
+            </div>
+
+            <div class="reference-card">
+                <h4>Software Architecture Patterns</h4>
+                <p>Software patterns "are examples of tried-and-true solutions and practice guidelines that can assist in transforming software engineering into a profession" <a href="#citation-2" class="citation-ref">[2]</a>. These patterns can be incorporated at any stage of development to improve system design.</p>
+                <a href="https://ieeexplore.ieee.org/document/10073279" target="_blank">View IEEE Source</a>
+            </div>
+
+            <div class="reference-card">
+                <h4>Clean Code Principles in Python</h4>
+                <p>Clean code is code that is "easy to read, understand, and maintain" <a href="#citation-3" class="citation-ref">[3]</a>. Following clean code principles in Python helps "emphasize readability, simplicity, and maintainability" as outlined in modern software development practices <a href="#citation-3" class="citation-ref">[3]</a>.</p>
+                <a href="https://medium.com/@CodeWithSahar/clean-code-principles-in-python-abcf386649d0" target="_blank">View Source</a>
+            </div>
+
+            <div class="reference-card">
+                <h4>Python Data Structures</h4>
+                <p>Python data structures provide standardized, efficient methods for storing and organizing information. Open Data Structures presents foundational concepts with a "mathematically rigorous approach that is fast, practical, and efficient" <a href="#citation-5" class="citation-ref">[5]</a>, balancing classical topics with state-of-the-art implementations.</p>
+                <a href="https://open.umn.edu/opentextbooks/textbooks/171" target="_blank">View Source</a>
+            </div>
+
+            <h4>Key Research Areas:</h4>
+            <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                <li>Dictionary implementation using hash tables for O(1) lookup performance <a href="#citation-5" class="citation-ref">[5]</a></li>
+                <li>Australian address format standards and validation patterns</li>
+                <li>Security best practices for unique identifier generation</li>
+                <li>Object-oriented design patterns for scalable systems <a href="#citation-1" class="citation-ref">[1]</a></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Communication Channels Section -->
+<section id="communication">
+    <div class="container">
+        <h2 class="section-title">Team Communication & Collaboration</h2>
+
+        <div class="content-card">
+            <h3>Communication Tools</h3>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon"><i class="fab fa-github"></i></div>
+                    <h4>GitHub</h4>
+                    <p>Version control, code reviews, issue tracking</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon"><i class="fab fa-microsoft"></i></div>
+                    <h4>Microsoft Teams</h4>
+                    <p>Video meetings, screen sharing, documentation</p>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon"><i class="fab fa-whatsapp"></i></div>
+                    <h4>WhatsApp</h4>
+                    <p>Quick updates, problem solving, daily communication</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3>Team Dynamics & Workflow</h3>
+            <p>Our team implemented clean code principles <a href="#citation-3" class="citation-ref">[3]</a> throughout our development workflow, focusing on readability and maintainability. This approach aligns with Martin's recommendation that code should be "read and enhanced by a developer other than its original author" <a href="#citation-4" class="citation-ref">[4]</a>.</p>
+            <ul style="padding-left: 1.5rem;">
+                <li>Maintained consistent coding style defined by the general structure</li>
+                <li>Immediate communication when encountering errors or blockers</li>
+                <li>Collaborative problem-solving when dependencies were needed</li>
+                <li>Regular code reviews to ensure quality and consistency</li>
+            </ul>
+
+            <h4>Key Learning:</h4>
+            <p>While some team members found administrative tracking tools less intuitive, their importance became clear as they provided essential documentation and visibility into project progress. Setting adequate deadlines allowed for steady development progress.</p>
+        </div>
+
+        <div class="content-card">
+            <h3>Role Distribution</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;">
+                <div>
+                    <h4>Jose Antonio Escalante Lopez</h4>
+                    <ul style="padding-left: 1.5rem;">
+                        <li>Fleet Management Module</li>
+                        <li>Shipment Management System</li>
+                        <li>General architecture design</li>
+                        <li>DataStore implementation</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Michael Gomez Paucar</h4>
+                    <ul style="padding-left: 1.5rem;">
+                        <li>Menu System Architecture</li>
+                        <li>Customer Management</li>
+                        <li>Delivery Management</li>
+                        <li>System Integration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Implementation Section -->
+<section id="implementation">
+    <div class="container">
+        <h2 class="section-title">Technical Implementation</h2>
+
+        <div class="content-card">
+            <h3>Data Structure Decision: Dictionary vs List</h3>
+            <p>In Python, dictionaries provide O(1) lookup performance using hash tables, making them ideal for our key-value data storage requirements <a href="#citation-5" class="citation-ref">[5]</a>. As the Open Data Structures documentation confirms, this allows for efficient data retrieval based on unique identifiers.</p>
+
+            <table class="comparison-table">
+                <thead>
+                <tr>
+                    <th>Operation</th>
+                    <th>Dictionary</th>
+                    <th>List</th>
+                    <th>Our Choice</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Lookup by ID</td>
+                    <td>O(1) average</td>
+                    <td>O(n)</td>
+                    <td>Dictionary ✓</td>
+                </tr>
+                <tr>
+                    <td>Memory Usage</td>
+                    <td>Higher</td>
+                    <td>Lower</td>
+                    <td>Acceptable trade-off</td>
+                </tr>
+                <tr>
+                    <td>Scalability</td>
+                    <td>Excellent</td>
+                    <td>Limited</td>
+                    <td>Dictionary ✓</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h4>Key Insights on Dictionary Implementation:</h4>
+            <ul style="padding-left: 1.5rem; margin-top: 1rem;">
+                <li>Faster data relationships through unique identifiers using hash tables</li>
+                <li>Hash-based allocation in memory enables quick identifier lookup</li>
+                <li>Highly scalable for growing datasets</li>
+                <li>Memory limitations may eventually require database migration for very large systems</li>
+            </ul>
+        </div>
+
+        <div class="content-card">
+            <h3>DataStore Architecture</h3>
+            <p>Our DataStore implementation follows the principles of abstraction and encapsulation as outlined in common OOP design patterns <a href="#citation-2" class="citation-ref">[2]</a>.</p>
+
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">DataStore Implementation</span>
+                </div>
+                <pre><code class="language-python">class DataStore:
+    """Central data management using dictionary for O(1) operations"""
+
+    def __init__(self):
+        self.data = {}  # Hash table for efficient lookups
+
+    def add(self, item):
+        # Generate unique ID with type prefix
+        if isinstance(item, Vehicle):
+            prefix = "V"
+        elif isinstance(item, Customer):
+            prefix = "C"
+
+        # Create secure random ID
+        item_id = f"{prefix}{random_string}"
+        self.data[item_id] = item
+        return item_id</code></pre>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3>OOP Principles Applied</h3>
+            <p>We applied the four fundamental OOP principles as described by Gamma et al. <a href="#citation-1" class="citation-ref">[1]</a> and Martin <a href="#citation-3" class="citation-ref">[3]</a>:</p>
+
+            <div class="oop-grid">
+                <div class="oop-card">
+                    <h4>Encapsulation</h4>
+                    <p>Private attributes protect internal state while public methods provide controlled access.</p>
+                </div>
+                <div class="oop-card">
+                    <h4>Inheritance</h4>
+                    <p>Menu base class provides common functionality to all specialized menu types.</p>
+                </div>
+                <div class="oop-card">
+                    <h4>Polymorphism</h4>
+                    <p>execute() method behaves differently in each menu subclass while maintaining consistent interface.</p>
+                </div>
+                <div class="oop-card">
+                    <h4>Modularity</h4>
+                    <p>Each component has single responsibility, enabling parallel development and easy maintenance.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h3>OOP Principles - Code Examples</h3>
+
+            <h4>1. Encapsulation Example</h4>
+            <p>Customer personal data is encapsulated within the Customer class, with controlled access as recommended by Martin <a href="#citation-3" class="citation-ref">[3]</a>:</p>
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">Customer Data Encapsulation</span>
+                </div>
+                <pre><code class="language-python">class Customer:
+    def __init__(self, customer_id=None, name=None, contact=None, address=None):
+        # Private data attributes
+        self.id = customer_id
+        self.name = name
+        self.contact = contact
+        self.address = address
+        self.shipment_ids = []
+
+    # Controlled access through public method
+    def display_info(self):
+        """Display customer information - controlled data exposure"""
+        print(f"Customer ID: {self.id}")
+        print(f"Name: {self.name}")
+        print(f"Contact: {self.contact}")
+        print(f"Address: {self.address}")
+        # Note: Internal data structure is hidden from external access</code></pre>
+            </div>
+
+            <h4>2. Inheritance Example</h4>
+            <p>Base Menu class template inherited by FleetMenu, demonstrating the reuse of common functionality as described in design patterns literature <a href="#citation-1" class="citation-ref">[1]</a>:</p>
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">Base Menu Template</span>
+                </div>
+                <pre><code class="language-python">class Menu:
+    """Base Menu class that all submenus inherit from"""
+
+    def __init__(self, title):
+        self.title = title
+        self.options = []
+        self.quit_options = ['q', 'Q', 'quit', 'Quit', '0']
+
+    def add_option(self, option_num, description, function):
+        """Common method for all menus"""
+        self.options.append({
+            'number': option_num,
+            'description': description,
+            'function': function
+        })
+
+    def display(self):
+        """Common display logic"""
+        print(f"\n===== {self.title} =====")
+        for option in self.options:
+            print(f"{option['number']}. {option['description']}")</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">FleetMenu Inheriting from Menu</span>
+                </div>
+                <pre><code class="language-python">class FleetMenu(Menu):
+    """Fleet Management Menu inherits from base Menu"""
+
+    def __init__(self, vehicle_store):
+        # Call parent class constructor
+        super().__init__("Fleet Management")
+        self.vehicle_store = vehicle_store
+        self.__status = "Available"
+
+        # Using inherited add_option method
+        self.add_option('1', 'Add a vehicle', self.add_vehicle)
+        self.add_option('2', 'Update vehicle information', self.update_vehicle)
+        self.add_option('3', 'Remove a vehicle', self.remove_vehicle)
+        # Inherited display() method is available automatically</code></pre>
+            </div>
+
+            <h4>3. Polymorphism Example</h4>
+            <p>The execute() method behaves differently in different menu classes, implementing polymorphism as described in IEEE design pattern literature <a href="#citation-2" class="citation-ref">[2]</a>:</p>
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">Base Menu execute() Method</span>
+                </div>
+                <pre><code class="language-python">class Menu:
+    def execute(self):
+        """Base execution logic - polymorphic behavior"""
+        while True:
+            self.display()
+            choice = input("\nSelect the menu to display: ")
+
+            if choice in self.quit_options:
+                print(f"Exiting {self.title}...")
+                break
+
+            # Find and execute selected option
+            selected = None
+            for option in self.options:
+                if choice == str(option['number']):
+                    selected = option
+                    break
+
+            if selected:
+                selected['function']()  # Execute the specific function
+            else:
+                print("Invalid option. Please try again.")</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">MainMenu execute() - Different Behavior</span>
+                </div>
+                <pre><code class="language-python">class MainMenu(Menu):
+    def execute(self):
+        """Overridden execute for main menu - different behavior"""
+        menu = MainMenu()
+        menu.execute()
+        print("Thank you for using the Logistics Management System. Goodbye!")
+        display_signature()  # Additional behavior specific to MainMenu</code></pre>
+            </div>
+
+            <h4>4. Modularity Example</h4>
+            <p>Each module has a single responsibility, like the DataStore for data management, following the Single Responsibility Principle that Martin advocates <a href="#citation-3" class="citation-ref">[3]</a>:</p>
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">Modular DataStore Component</span>
+                </div>
+                <pre><code class="language-python">class DataStore:
+    """Single responsibility: Manage data storage and retrieval"""
+
+    def __init__(self):
+        self.data = {}
+
+    def add(self, item):
+        """Only handles adding items"""
+        item_id = self._generate_id(item)
+        self.data[item_id] = item
+        return item_id
+
+    def find(self, item_id):
+        """Only handles finding items"""
+        return self.data.get(item_id)
+
+    def remove(self, item_id):
+        """Only handles removing items"""
+        if item_id in self.data:
+            del self.data[item_id]
+            return True
+        return False
+
+    # Each method has one clear purpose - modular design</code></pre>
+            </div>
+
+            <p>This modular approach allowed Jose Antonio to work on Fleet Management while Michael developed the Menu System independently, with clean interfaces between components.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Reflection Section -->
+<section id="reflection">
+    <div class="container">
+        <h2 class="section-title">Project Reflection & Learnings</h2>
+
+        <div class="challenge-grid">
+            <div class="success-card">
+                <h3>What Went Well</h3>
+                <ul style="padding-left: 1.5rem;">
+                    <li>Successful implementation of modular OOP design</li>
+                    <li>Efficient data structure selection and implementation</li>
+                    <li>Strong team collaboration on general structure</li>
+                    <li>Consistent coding style across modules</li>
+                    <li>Effective use of version control</li>
+                </ul>
+            </div>
+            <div class="challenge-card">
+                <h3>Challenges Overcome</h3>
+                <ul style="padding-left: 1.5rem;">
+                    <li>Designing optimal data storage structure</li>
+                    <li>Managing circular dependencies between modules</li>
+                    <li>Implementing complex Australian address validation</li>
+                    <li>Balancing memory efficiency with performance</li>
+                    <li>Coordinating parallel development efforts</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content-card" style="margin-top: 2rem;">
+            <h3>Key Technical Learnings</h3>
+
+            <h4>1. Modularity in OOP</h4>
+            <p>Learned how to effectively implement OOP principles to create modular, maintainable code that can be developed in parallel by team members, following the guidelines of Jiang et al. <a href="#citation-1" class="citation-ref">[1]</a> and modern clean code practices <a href="#citation-3" class="citation-ref">[3]</a>.</p>
+
+            <h4>2. Data Structure Trade-offs</h4>
+            <p>Gained deep understanding of dictionary advantages and limitations <a href="#citation-5" class="citation-ref">[5]</a>:</p>
+            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                <li>O(1) lookup performance through hash tables</li>
+                <li>Memory overhead considerations</li>
+                <li>Scalability benefits for growing systems</li>
+                <li>When to consider database migration for larger datasets</li>
+            </ul>
+
+            <h4>3. Team Collaboration Insights</h4>
+            <p>Discovered the importance of:</p>
+            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                <li>Clear communication channels for different purposes</li>
+                <li>Consistent coding standards across the team</li>
+                <li>Proactive problem-solving when dependencies arise</li>
+                <li>Documentation for project visibility and progress tracking</li>
+            </ul>
+        </div>
+
+        <div class="content-card">
+            <h3>Future Improvements</h3>
+            <ul style="padding-left: 1.5rem;">
+                <li>Earlier integration testing to catch dependency issues</li>
+                <li>More comprehensive unit test coverage</li>
+                <li>Better adoption of project management tools</li>
+                <li>Regular code review sessions</li>
+                <li>Database integration for larger-scale deployments</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- References Section -->
+<section id="references" class="citation-section">
+    <div class="container">
+        <h2 class="section-title">References</h2>
+
+        <ol class="citation-list">
+            <li id="citation-1">
+                Jiang, F., & Lu, Y. (2012). Design patterns in software development. <em>Proceedings of the IEEE International Conference on Software Technology and Engineering</em>, IEEE, 322-326. Retrieved from <a href="https://ieeexplore.ieee.org/document/5982228" target="_blank">https://ieeexplore.ieee.org/document/5982228</a>
+            </li>
+            <li id="citation-2">
+                Kumar, P. N., Kumar, S. S., & Rajavarman, V. N. (2023). Software design patterns and architecture patterns–A study explored. <em>8th International Conference on Electrical, Computer and Communication Technologies (ICECCT)</em>, IEEE, 1-6. Retrieved from <a href="https://ieeexplore.ieee.org/document/10073279" target="_blank">https://ieeexplore.ieee.org/document/10073279</a>
+            </li>
+            <li id="citation-3">
+                Sahar, A. (2023). Clean code principles in Python. <em>Medium</em>. Retrieved from <a href="https://medium.com/@CodeWithSahar/clean-code-principles-in-python-abcf386649d0" target="_blank">https://medium.com/@CodeWithSahar/clean-code-principles-in-python-abcf386649d0</a>
+            </li>
+            <li id="citation-4">
+                Washizaki, H., Uchida, H., Khomh, F., & Gueheneuc, Y. G. (2019). Studying software engineering patterns for designing machine learning systems. <em>10th International Workshop on Empirical Software Engineering in Practice (IWESEP)</em>, IEEE, 49-54. Retrieved from <a href="https://ieeexplore.ieee.org/document/8945075" target="_blank">https://ieeexplore.ieee.org/document/8945075</a>
+            </li>
+            <li id="citation-5">
+                Morin, P. (2013). <em>Open data structures: An introduction</em>. AU Press. Retrieved from <a href="https://open.umn.edu/opentextbooks/textbooks/171" target="_blank">https://open.umn.edu/opentextbooks/textbooks/171</a>
+            </li>
+        </ol>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <h2>Thank You</h2>
+        <p>Questions & Discussion</p>
+
+        <div class="github-links">
+            <a href="https://github.com/jaelDS" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+                @jaelDS
+            </a>
+            <a href="https://github.com/PatrickGP23" class="github-link" target="_blank">
+                <i class="fab fa-github"></i>
+                @PatrickGP23
+            </a>
+        </div>
+
+        <p style="margin-top: 2rem; color: #94a3b8;">
+            Logistics Management System - Assessment #3<br>
+            Developed by Jose Antonio Escalante Lopez & Michael Gomez Paucar
+        </p>
+    </div>
+</footer>
+
+<!-- External JavaScript Libraries with Subresource Integrity -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0TIZYGrYn/Z7qA42n2XH/AEk5mDZGCxvWwzjjWcDJQSRUyABHTeQpUB1JzHBQ3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- Custom JavaScript -->
+<script src="scripts.js"></script>
+</body>
+</html>
