@@ -4,34 +4,380 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logistics Management System - Assessment #3 Presentation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path fill='%233776AB' d='M49.7 32.2V17.5c0-4.6-3.7-8-8-8h-17c-4.4 0-8 3.6-8 8v14.7h17v2H8.3c-4.4 0-8 3.3-8 7.5 0 3.8 0 12.3 0 16 0 4.2 3.6 7.5 8 7.5H17v-10c0-4.4 3.6-8 8-8h16.9c4.3 0 8-3.7 8-8 0-3.7 0-7.5 0-10.7 0-3.6-3.7-6.3-8-6.3h-17.5M31 19.5c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3z'/><path fill='%23FFD43B' d='M69.7 42.2V57c0 4.4-3.7 8-8 8H44.7c-4.4 0-8 3.6-8 8v14.7h17v2H19.3c-4.4 0-8-3.3-8-7.5 0-3.8 0-12.3 0-16 0-4.2 3.6-7.5 8-7.5H28v10c0 4.4 3.6 8 8 8h16.9c4.4 0 8-3.6 8-8V42.2h8.8zm-14.5 45.1c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z'/></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap');
 
-    <!-- Security: Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --code-bg: #2d3748;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
 
-    <!-- Security: Prevent MIME type sniffing attacks -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <!-- Security: Prevent clickjacking -->
-    <meta http-equiv="X-Frame-Options" content="DENY">
+        html {
+            scroll-behavior: smooth;
+        }
 
-    <!-- Security: Enable XSS protection in older browsers -->
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.7;
+        }
 
-    <!-- External CSS Libraries with Subresource Integrity -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" integrity="sha512-vswe+cgvic/XBoF1OcM/TeJ2FW0OofqAVdCZiEYkd6dwGXthvkSFWOoGGJgS2CW70VK5dQM5Oh+7ne47s74VTg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .subsection-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9f3ff 100%);
+            padding: 8rem 0 5rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+
+        .team-member {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .team-member h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid var(--primary);
+        }
+
+        .reference-card {
+            background: #f0f9ff;
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reference-card h4 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .reference-card p {
+            font-size: 0.95rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .reference-card a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .reference-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* Code Examples */
+        .code-example {
+            background: var(--code-bg);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: #1a202c;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-title {
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        pre {
+            margin: 0;
+            padding: 1.5rem !important;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.9rem !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Tables */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .comparison-table th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        /* Grids */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tool-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .challenge-card {
+            background: #fef3c7;
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success-card {
+            background: #f0fdf4;
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* OOP Principles */
+        .oop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .oop-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .oop-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Citation styles */
+        .citation-ref {
+            font-size: 0.8rem;
+            vertical-align: super;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .citation-section {
+            background-color: #f8f9fa;
+        }
+
+        .citation-list {
+            padding-left: 2rem;
+        }
+
+        .citation-list li {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .github-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .github-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .github-link:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .team-grid,
+            .challenge-grid,
+            .oop-grid,
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
 <!-- Navigation -->
 <nav>
     <div class="container">
         <div class="logo"><img src="img_python/TORRENS_UNIVERSITY_AUSTRALIA_PRIMARY_LOGO_ORANGE_GREY_RGB.png" height="60" alt="Torrens University"/></div>
-        <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
-            <i class="fas fa-bars"></i>
-        </button>
         <ul class="nav-links">
             <li><a href="#overview">Overview</a></li>
             <li><a href="#background">Background</a></li>
@@ -70,6 +416,69 @@
         </div>
     </div>
 </section>
+
+<div class="content-card">
+    <h3>Design Evolution: FMS vs LMS Architecture</h3>
+    <p>The following diagram illustrates the architectural transformation from a procedural design (FMS) to a comprehensive object-oriented design (LMS):</p>
+
+    <div class="code-example">
+        <div class="code-header">
+            <span class="code-title">Architectural Comparison: Procedural vs Object-Oriented Design</span>
+        </div>
+        <pre style="background-color: #282c34; color: #abb2bf; padding: 1.5rem; border-radius: 5px; line-height: 1.2; font-family: 'JetBrains Mono', monospace; overflow-x: auto; white-space: pre;"><code class="language-text">
++------------------------------- FMS (Procedural) ------------------------------+  +-------------------------------- LMS (OOP) --------------------------------+
+|                                                                               |  |                                                                             |
+|  +------------------+                                                         |  |  +------------------+                                                      |
+|  |      main()      |                                                         |  |  |     MainMenu     |                                                      |
+|  +--------+---------+                                                         |  |  +--------+---------+                                                      |
+|           |                                                                   |  |           |                                                                |
+|           v                                                                   |  |           v                                                                |
+|  +------------------+                                                         |  |  +------------------+                                                      |
+|  |  function-based  |                                                         |  |  |    Menu Base     |                                                      |
+|  |      menu        |                                                         |  |  |      Class       |<--------------------------+                          |
+|  +--------+---------+                                                         |  |  +--------+---------+                           |                          |
+|           |                                                                   |  |           |                                     |                          |
+|           v                                                                   |  |           |                                     |                          |
+|  +------------------+                                                         |  |           |   Inheritance                       |                          |
+|  |   Global Lists   |                                                         |  |           |   Hierarchy                         |                          |
+|  | +--------------+ |                                                         |  |           v                                     |                          |
+|  | |vehicles_list | |                                                         |  |  +-----+-------+-------+-----+                 |                          |
+|  | |shipment_list | |                                                         |  |  |     |       |       |     |                 |                          |
+|  | |delivery_list | |                                                         |  |  |     |       |       |     |                 |                          |
+|  | +--------------+ |                                                         |  |  v     v       v       v     v                 |                          |
+|  +--------+---------+                                                         |  |  +---------+ +---------+ +---------+ +---------+ |                          |
+|           |                                                                   |  |  |FleetMenu| |CustomerM| |ShipmentM| |DeliveryM| |                          |
+|           v                         +---------------+                         |  |  +----+----+ +----+----+ +----+----+ +----+----+ |                          |
+|  +------------------+               |  Input/Output |                         |  |       |           |           |           |      |                          |
+|  |    Procedural    |<--------------+   Validation  |                         |  |       |           |           |           |      |                          |
+|  |    Functions     |               |   Functions   |                         |  |       |           |           |           |      |                          |
+|  | +--------------+ |               +---------------+                         |  |       |           |           |           |      |                          |
+|  | |add_vehicle() | |                                                         |  |       |           |           |           |      |                          |
+|  | |track_ship()  | |               +---------------+                         |  |       v           v           v           v      |                          |
+|  | |record_deliv()| |<--------------+  Data Access  |                         |  |  +---------+ +---------+ +---------+ +---------+ |                          |
+|  | +--------------+ |               |   Functions   |                         |  |  |DataStore| |DataStore| |DataStore| |DataStore| |                          |
+|  +------------------+               +---------------+                         |  |  |(Vehicle)| |(Customer| |(Shipment| |(Delivery| |                          |
+|                                                                               |  |  +---------+ +---------+ +---------+ +---------+ |                          |
+|                                                                               |  |                                                 |                          |
+|       No Encapsulation / Limited Code Reuse                                   |  |                 Data Objects                    |                          |
+|                                                                               |  |  +---------+ +---------+ +---------+ +---------+ |                          |
+|  +------------------+                                                         |  |  | Vehicle | |Customer | |Shipment | |Delivery |-+                          |
+|  |     Limited      |                                                         |  |  |  Class  | |  Class  | |  Class  | |  Class  |                            |
+|  |   Extensibility  |                                                         |  |  +---------+ +---------+ +---------+ +---------+                            |
+|  +------------------+                                                         |  |                                                                             |
+|                                                                               |  |        Encapsulation + Inheritance + Polymorphism                           |
++-------------------------------------------------------------------------------+  +-----------------------------------------------------------------------------+
+
+Key Advantages of OOP Design:
+- Modularity: Each class has a single responsibility
+- Encapsulation: Data and methods are bundled together
+- Inheritance: Code reuse through class hierarchies
+- Polymorphism: Same interface, different implementations
+- Extension: New features can be added with minimal changes
+- Maintainability: Easier to modify and debug separate components
+</code></pre>
+    </div>
+</div>
 
 <!-- Background Research Section -->
 <section id="background">
@@ -143,16 +552,23 @@
 
         <div class="content-card">
             <h3>Team Dynamics & Workflow</h3>
-            <p>Our team implemented clean code principles <a href="#citation-3" class="citation-ref">[3]</a> throughout our development workflow, focusing on readability and maintainability. This approach aligns with Martin's recommendation that code should be "read and enhanced by a developer other than its original author" <a href="#citation-4" class="citation-ref">[4]</a>.</p>
+            <p>Our team implemented clean code principles <a href="#citation-3" class="citation-ref">[3]</a> throughout our development workflow, focusing on readability and maintainability. This approach aligns with Martin's recommendation that code should be "read and enhanced by a developer other than its original author" <a href="#citation-4" class="citation-ref">[4]</a>. Our team was in constant communication through WhatsApp as needed, however the project was managed greatly on Github. <a href="https://github.com/users/JaelDS/projects/5" >OOP Transportation Program Project.</a></p>
             <ul style="padding-left: 1.5rem;">
                 <li>Maintained consistent coding style defined by the general structure</li>
                 <li>Immediate communication when encountering errors or blockers</li>
                 <li>Collaborative problem-solving when dependencies were needed</li>
                 <li>Regular code reviews to ensure quality and consistency</li>
+                <li>Constant update of tasks assigned</li>
             </ul>
 
             <h4>Key Learning:</h4>
-            <p>While some team members found administrative tracking tools less intuitive, their importance became clear as they provided essential documentation and visibility into project progress. Setting adequate deadlines allowed for steady development progress.</p>
+            <ul style="padding-left: 1.5rem;">
+                <li>Conceptualization</li>
+                <li>Abstraction</li>
+                <li>Time Management</li>
+                <li>Project Management</li>
+                <li>Critical Thinking</li>
+            </ul>
         </div>
 
         <div class="content-card">
@@ -165,6 +581,7 @@
                         <li>Shipment Management System</li>
                         <li>General architecture design</li>
                         <li>DataStore implementation</li>
+                        <li>Project Management</li>
                     </ul>
                 </div>
                 <div>
@@ -174,6 +591,7 @@
                         <li>Customer Management</li>
                         <li>Delivery Management</li>
                         <li>System Integration</li>
+                        <li>Tester</li>
                     </ul>
                 </div>
             </div>
@@ -258,9 +676,53 @@
             </div>
         </div>
 
+        <!-- Customer Dictionary Example Card -->
+        <div class="content-card">
+            <h3>Customer Dictionary Structure Example</h3>
+
+            <div class="code-example">
+                <div class="code-header">
+                    <span class="code-title">Customer Dictionary Representation</span>
+                </div>
+                <pre><code class="language-javascript">{
+  "CXHSG451": {
+    "id": "CXHSG451",
+    "name": "Acme Industries Ltd.",
+    "contact": "+61 4 1234 5678",
+    "address": "123 Main St, Brisbane, QLD",
+    "shipment_ids": ["S7GHI321", "SABC789F"]
+  },
+  "C5XY2AB": {
+    "id": "C5XY2AB",
+    "name": "Brisbane Logistics Co.",
+    "contact": "+61 7 8765 4321",
+    "address": "456 Queen St, Brisbane, QLD",
+    "shipment_ids": ["S123XYZ7"]
+  },
+  "C7DEF456": {
+    "id": "C7DEF456",
+    "name": "Queensland Suppliers",
+    "contact": "+61 4 9876 5432",
+    "address": "789 Edward St, Brisbane, QLD",
+    "shipment_ids": []
+  }
+}</code></pre>
+            </div>
+
+            <h4>Key Concepts:</h4>
+            <ul style="padding-left: 1.5rem; margin-top: 1rem;">
+                <li>Each customer ID (starting with "C") serves as the unique key in the dictionary</li>
+                <li>The entire customer object with all its attributes is the value associated with that key</li>
+                <li>This structure enables O(1) lookup when searching by ID</li>
+                <li>All customer details (name, contact, etc.) are "subdata" of the ID key</li>
+                <li>The shipment_ids array stores references to related shipments through their IDs</li>
+            </ul>
+        </div>
+
+
         <div class="content-card">
             <h3>OOP Principles Applied</h3>
-            <p>We applied the four fundamental OOP principles as described by Gamma et al. <a href="#citation-1" class="citation-ref">[1]</a> and Martin <a href="#citation-3" class="citation-ref">[3]</a>:</p>
+            <p>We applied the four fundamental OOP principles as described by Gamma et al. <a href="#citation-1" class="citation-ref">[1]</a> and Martin <a href="#citation-3" class="citation-ref">[3]</a> and in class explained by <strong>Shazi Saremi</strong>:</p>
 
             <div class="oop-grid">
                 <div class="oop-card">
@@ -286,7 +748,7 @@
             <h3>OOP Principles - Code Examples</h3>
 
             <h4>1. Encapsulation Example</h4>
-            <p>Customer personal data is encapsulated within the Customer class, with controlled access as recommended by Martin <a href="#citation-3" class="citation-ref">[3]</a>:</p>
+            <p>Customer personal data is encapsulated within the Customer class, with controlled access as recommended by <strong>Shazi</strong>:</p>
             <div class="code-example">
                 <div class="code-header">
                     <span class="code-title">Customer Data Encapsulation</span>
@@ -311,7 +773,7 @@
             </div>
 
             <h4>2. Inheritance Example</h4>
-            <p>Base Menu class template inherited by FleetMenu, demonstrating the reuse of common functionality as described in design patterns literature <a href="#citation-1" class="citation-ref">[1]</a>:</p>
+            <p>Base Menu class template inherited by FleetMenu, demonstrating the reuse of common functionality as described in design patterns literature <a href="#citation-1" class="citation-ref">[1]</a> and in class:</p>
             <div class="code-example">
                 <div class="code-header">
                     <span class="code-title">Base Menu Template</span>
@@ -360,7 +822,7 @@
             </div>
 
             <h4>3. Polymorphism Example</h4>
-            <p>The execute() method behaves differently in different menu classes, implementing polymorphism as described in IEEE design pattern literature <a href="#citation-2" class="citation-ref">[2]</a>:</p>
+            <p>The execute() method behaves differently in different menu classes, implementing polymorphism as described in class:</p>
             <div class="code-example">
                 <div class="code-header">
                     <span class="code-title">Base Menu execute() Method</span>
@@ -434,7 +896,7 @@
     # Each method has one clear purpose - modular design</code></pre>
             </div>
 
-            <p>This modular approach allowed Jose Antonio to work on Fleet Management while Michael developed the Menu System independently, with clean interfaces between components.</p>
+            <p>This modular approach allowed me to work on Fleet Management while Michael developed the Menu System independently, with clean interfaces between components.</p>
         </div>
     </div>
 </section>
@@ -461,7 +923,6 @@
                     <li>Designing optimal data storage structure</li>
                     <li>Managing circular dependencies between modules</li>
                     <li>Implementing complex Australian address validation</li>
-                    <li>Balancing memory efficiency with performance</li>
                     <li>Coordinating parallel development efforts</li>
                 </ul>
             </div>
@@ -496,7 +957,7 @@
             <h3>Future Improvements</h3>
             <ul style="padding-left: 1.5rem;">
                 <li>Earlier integration testing to catch dependency issues</li>
-                <li>More comprehensive unit test coverage</li>
+                <li>Learn about different tools for automated testing, like Qodana or SonarQube</li>
                 <li>Better adoption of project management tools</li>
                 <li>Regular code review sessions</li>
                 <li>Database integration for larger-scale deployments</li>
@@ -554,11 +1015,7 @@
     </div>
 </footer>
 
-<!-- External JavaScript Libraries with Subresource Integrity -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" integrity="sha512-AKaNmg8COK0zEbjTdMHJAPJ0TIZYGrYn/Z7qA42n2XH/AEk5mDZGCxvWwzjjWcDJQSRUyABHTeQpUB1JzHBQ3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<!-- Custom JavaScript -->
-<script src="scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 </body>
 </html>
