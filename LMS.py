@@ -21,30 +21,35 @@ from colorama import Fore, Style, init
 # Initialize colorama
 init()
 
+# Browser-compatible version (no colorama)
+class BrowserColors:
+    def __init__(self):
+        self.CYAN = ''
+        self.MAGENTA = ''
+        self.BLUE = ''
+        self.GREEN = ''
+        self.RED = ''
+        self.YELLOW = ''
+        self.WHITE = ''
+        self.RESET_ALL = ''
+
+class BrowserStyle:
+    def __init__(self):
+        self.RESET_ALL = ''
+
+# Create browser-compatible replacements
+Fore = BrowserColors()
+Style = BrowserStyle()
+
+# No need for init() in browser
+def init():
+    pass
+
 def display_signature():
-    # Define colors
-    border = Fore.CYAN
-    code = Fore.MAGENTA
-    crafted = Fore.BLUE
-    with_text = Fore.GREEN
-    heart = Fore.RED
-    by = Fore.YELLOW
-    name = Fore.WHITE
-    reset = Style.RESET_ALL
-
-    # Text with both names
-    content = f"   {code}Code{reset} {crafted}crafted{reset} {with_text}with{reset} {heart}♥{reset} {by}by{reset} {name}Jael & Patrick{reset}   "
-    content_length = len("   Code crafted with ♥ by Jael & Patrick   ")
-
-    # Create a double-line border that's proportional to the content
-    top_border = f"{border}╔{'═' * (content_length + 2)}╗{reset}"
-    side_border = f"{border}║{reset}"
-    bottom_border = f"{border}╚{'═' * (content_length + 2)}╝{reset}"
-
-    # Print the signature with proper spacing
-    print("\n" + top_border)
-    print(f"{side_border} {content} {side_border}")
-    print(bottom_border + "\n")
+    # Browser-compatible version (no colors)
+    print("\n╔═════════════════════════════════════════════╗")
+    print("║    Code crafted with ♥ by Jael & Patrick    ║")
+    print("╚═════════════════════════════════════════════╝\n")
 
 class DataStore:
     """Base class for data storage
